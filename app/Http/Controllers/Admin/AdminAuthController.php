@@ -22,9 +22,12 @@ class AdminAuthController extends Controller
     public function login(LoginRequest $request)
     {
         if (!Auth::guard('admin')->attempt($request->only(['email', 'password']))) {
-            throw ValidationException::withMessages([
-                'message' => 'invalid email or password.',
-            ]);
+            return response()->json(
+                [
+                    'message' => 'invalid email or password.',
+                ],
+                401,
+            );
         }
 
         $request->session()->regenerate();

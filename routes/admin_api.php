@@ -17,14 +17,16 @@ Route::prefix('permissions')
     ->middleware(['auth:sanctum', EnsureAdmin::class])
     ->group(function () {
         Route::get('', [AdminPermissionController::class, 'index'])->can('read:permission');
-        Route::get('/{id}', [AdminPermissionController::class, 'show'])->can('read:permission');
+        Route::get('{id}', [AdminPermissionController::class, 'show'])->can('read:permission');
         Route::post('', [AdminPermissionController::class, 'store'])->can('create:permission');
-        Route::put('/{id}', [AdminPermissionController::class, 'update'])->can('update:permission');
-        Route::delete('/{id}', [AdminPermissionController::class, 'destroy'])->can('delete:permission');
-        Route::post('/assign', [AdminPermissionController::class, 'assign'])->can('assign:permission');
-        Route::post('/revoke', [AdminPermissionController::class, 'revoke'])->can('revoke:permission');
+        Route::put('{id}', [AdminPermissionController::class, 'update'])->can('update:permission');
+        Route::delete('{id}', [AdminPermissionController::class, 'destroy'])->can('delete:permission');
+        Route::post('assign', [AdminPermissionController::class, 'assign'])->can('assign:permission');
+        Route::post('revoke', [AdminPermissionController::class, 'revoke'])->can('revoke:permission');
     });
 
 Route::middleware(['auth:sanctum', EnsureAdmin::class])->group(function () {
     Route::get('me', [AdminDashboardController::class, 'get_current_admin']);
+    Route::post('change-password', [AdminDashboardController::class, 'change_password']);
+    Route::patch('name', [AdminDashboardController::class, 'change_name']);
 });
