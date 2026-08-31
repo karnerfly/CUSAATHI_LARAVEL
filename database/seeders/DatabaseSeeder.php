@@ -47,21 +47,18 @@ class DatabaseSeeder extends Seeder
             ],
         ]);
 
-        Admin::factory()->create([
+        $admin = Admin::factory()->create([
             'name' => 'Toufique Al Ajay',
             'email' => 'toufique26ajay@gmail.com',
         ]);
 
-        $admin = Admin::where('email', 'toufique26ajay@gmail.com')->first();
         $permissions = Permission::all();
 
-        if ($admin) {
-            foreach ($permissions as $permission) {
-                DB::table('admin_permission')->insert([
-                    'admin_id' => $admin->id,
-                    'permission_id' => $permission->id,
-                ]);
-            }
+        foreach ($permissions as $permission) {
+            DB::table('admin_permission')->insert([
+                'admin_id' => $admin->id,
+                'permission_id' => $permission->id,
+            ]);
         }
     }
 }

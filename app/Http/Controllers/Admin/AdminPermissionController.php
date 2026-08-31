@@ -3,29 +3,21 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\GetPermissionsRequest;
-use App\Http\Requests\Admin\ManagePermissionRequest;
+use App\Http\Requests\Admin\AssignPermissionsRequest;
 use App\Http\Requests\Admin\StorePermissionRequest;
+use App\Http\Resources\Admin\PermissionResource;
 use App\Models\Admin;
 use App\Models\Permission;
-use Illuminate\Validation\ValidationException;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class AdminPermissionController extends Controller
 {
     /**
      * Display a listing of the permissions.
      */
-    public function index(GetPermissionsRequest $request)
+    public function index()
     {
-        $admin_id = $request->input('admin_id');
-        $query = Permission::query();
-        if ($admin_id) {
-            $query->whereHas('admins', function ($query) use ($admin_id) {
-                $query->where('admin_id', $admin_id);
-            });
-        }
-
-        return $query->get();
+        return Permission::all();
     }
 
     /**
@@ -47,17 +39,16 @@ class AdminPermissionController extends Controller
     /**
      * Display the specified permission.
      */
-    public function show(string $id)
+    public function show(Permission $permission)
     {
-        return Permission::findOrFail($id);
+        return $permission;
     }
 
     /**
      * Update the specified permission.
      */
-    public function update(StorePermissionRequest $request, string $id)
+    public function update(StorePermissionRequest $request, Permission $permission)
     {
-        $permission = Permission::findOrFail($id);
         $permission->update($request->all(['name', 'ability']));
 
         return response()->json(
@@ -72,9 +63,8 @@ class AdminPermissionController extends Controller
     /**
      * Remove the specified permission.
      */
-    public function destroy(string $id)
+    public function destroy(Permission $permission)
     {
-        $permission = Permission::findOrFail($id);
         $permission->delete();
 
         return response()->noContent();
@@ -83,87 +73,28 @@ class AdminPermissionController extends Controller
     /**
      * Assign a permission to an admin.
      */
-    public function assign(ManagePermissionRequest $request)
+    public function assign(AssignPermissionsRequest $request, Admin $admin)
     {
-        $admin_id = $request->input('admin_id');
-        $permission_id = $request->input('permission_id');
-
-        $admin = Admin::find($admin_id);
-        if ($admin == null) {
-            return response()->json(
-                [
-                    'message' => 'admin does not exists.',
-                ],
-                404,
-            );
-        }
-
-        $permission = Permission::find($permission_id);
-        if ($permission == null) {
-            return response()->json(
-                [
-                    'message' => 'permission does not exists.',
-                ],
-                404,
-            );
-        }
-
-        $permission = Permission::find($permission_id);
-        if ($permission == null) {
-            return response()->json(
-                [
-                    'message' => 'permission does not exists.',
-                ],
-                404,
-            );
-        }
-
-        if ($admin->permissions()->where('id', $permission_id)->exists()) {
-            throw ValidationException::withMessages([
-                'permission_id' => 'permission already assigned to this admin.',
-            ]);
-        }
-
-        $admin->permissions()->attach($permission_id);
+        $permission_ids = $request->input('permission_ids');
+        $admin->permissions()->syncWithoutDetaching($permission_ids);
 
         return response()->noContent();
     }
 
     /**
+     *  Get permissions of the specified admin.
+     */
+    public function get_admin_permissions(Admin $admin): AnonymousResourceCollection
+    {
+        return PermissionResource::collection($admin->permissions()->get());
+    }
+
+    /**
      * Revoke permission from an admin.
      */
-    public function revoke(ManagePermissionRequest $request)
+    public function revoke(Admin $admin, Permission $permission)
     {
-        $admin_id = $request->input('admin_id');
-        $permission_id = $request->input('permission_id');
-
-        $admin = Admin::find($admin_id);
-        if ($admin == null) {
-            return response()->json(
-                [
-                    'message' => 'admin does not exists.',
-                ],
-                404,
-            );
-        }
-
-        $permission = Permission::find($permission_id);
-        if ($permission == null) {
-            return response()->json(
-                [
-                    'message' => 'permission does not exists.',
-                ],
-                404,
-            );
-        }
-
-        if (!$admin->permissions()->where('id', $permission_id)->exists()) {
-            throw ValidationException::withMessages([
-                'permission_id' => 'permission was not assigned to this admin.',
-            ]);
-        }
-
-        $admin->permissions()->detach($permission_id);
+        $admin->permissions()->detach($permission->id);
 
         return response()->noContent();
     }
