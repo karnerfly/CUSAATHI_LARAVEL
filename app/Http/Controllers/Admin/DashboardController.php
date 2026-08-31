@@ -2,16 +2,18 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\ChangeNameReqest;
 use App\Http\Requests\Admin\ChangePasswordReqest;
 use App\Http\Requests\Admin\UploadProfilePictureReqest;
 use App\Http\Resources\Admin\AdminResource;
-use App\Models\Admin;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
-class AdminDashboardController extends Controller
+#[Group('Admin Dashboard')]
+class DashboardController extends Controller
 {
     /**
      * Get details of current admin

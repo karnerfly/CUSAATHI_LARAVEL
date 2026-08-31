@@ -7,14 +7,15 @@ use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-#[Fillable(['name', 'email', 'password', 'profile_url'])]
-#[Hidden(['password'])]
+#[Fillable(['name', 'email', 'password', 'active', 'profile_url'])]
+#[Hidden(['password', 'deleted_at'])]
 class Admin extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, SoftDeletes;
 
     /**
      * Get the attributes that should be cast.
@@ -24,6 +25,7 @@ class Admin extends Authenticatable
     protected function casts(): array
     {
         return [
+            'active' => 'boolean',
             'password' => 'hashed',
         ];
     }

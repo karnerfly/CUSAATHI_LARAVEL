@@ -25,6 +25,7 @@ return new class extends Migration {
             $table->id();
             $table->string('name', 100)->unique();
             $table->string('ability', 100)->unique();
+            $table->string('category', 50);
             $table->timestampsTz();
         });
 

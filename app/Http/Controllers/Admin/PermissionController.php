@@ -2,22 +2,24 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\Admin;
+use App\Models\Permission;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\AssignPermissionsRequest;
 use App\Http\Requests\Admin\StorePermissionRequest;
 use App\Http\Resources\Admin\PermissionResource;
-use App\Models\Admin;
-use App\Models\Permission;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
-class AdminPermissionController extends Controller
+#[Group('Admin Permission')]
+class PermissionController extends Controller
 {
     /**
      * Display a listing of the permissions.
      */
     public function index()
     {
-        return Permission::all();
+        return Permission::orderBy('category')->get();
     }
 
     /**
@@ -25,7 +27,7 @@ class AdminPermissionController extends Controller
      */
     public function store(StorePermissionRequest $request)
     {
-        $permission = Permission::create($request->only(['name', 'ability']));
+        $permission = Permission::create($request->only(['name', 'ability', 'category']));
 
         return response()->json(
             [
@@ -49,7 +51,7 @@ class AdminPermissionController extends Controller
      */
     public function update(StorePermissionRequest $request, Permission $permission)
     {
-        $permission->update($request->all(['name', 'ability']));
+        $permission->update($request->all(['name', 'ability', 'category']));
 
         return response()->json(
             [
@@ -86,7 +88,7 @@ class AdminPermissionController extends Controller
      */
     public function get_admin_permissions(Admin $admin): AnonymousResourceCollection
     {
-        return PermissionResource::collection($admin->permissions()->get());
+        return PermissionResource::collection($admin->permissions()->orderBy('category')->get());
     }
 
     /**

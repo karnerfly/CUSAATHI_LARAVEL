@@ -17,7 +17,7 @@ class EnsureAdmin
     public function handle(Request $request, Closure $next): Response
     {
         $admin = $request->user('admin');
-        if (!$admin || !($admin instanceof Admin)) {
+        if (!$admin || !($admin instanceof Admin) || !$admin->active) {
             return response()->json(
                 [
                     'message' => 'Unauthenticated.',

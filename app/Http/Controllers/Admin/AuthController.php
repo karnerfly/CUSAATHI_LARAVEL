@@ -2,26 +2,35 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\ForgotPasswordRequest;
 use App\Http\Requests\Admin\LoginRequest;
 use App\Http\Requests\Admin\ResetPasswordRequest;
 use App\Http\Resources\Admin\AdminResource;
-use App\Models\Admin;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Auth\Events\PasswordReset;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Password;
-use Illuminate\Validation\ValidationException;
 
-class AdminAuthController extends Controller
+#[Group('Admin Auth')]
+class AuthController extends Controller
 {
     /**
      * Login.
      */
     public function login(LoginRequest $request)
     {
-        if (!Auth::guard('admin')->attempt($request->only(['email', 'password']))) {
+        $auth_passed = Auth::guard('admin')->attempt([
+            'email' => $request->input('email'),
+            'password' => $request->input('password'),
+            'active' => true,
+        ]);
+
+        if (!$auth_passed) {
             return response()->json(
                 [
                     'message' => 'invalid email or password.',
@@ -43,17 +52,19 @@ class AdminAuthController extends Controller
      */
     public function forgot_password(ForgotPasswordRequest $request)
     {
-        $status = Password::broker('admins')->sendResetLink($request->only('email'));
+        $status = Password::broker('admins')->sendResetLink([
+            'email' => $request->input('email'),
+            'active' => true,
+        ]);
 
         if ($status !== Password::ResetLinkSent) {
-            throw ValidationException::withMessages([
-                'email' => __($status),
+            Log::error('failed to send mail', [
+                'email' => $request->input('email'),
+                'error' => __($status),
             ]);
         }
 
-        return response()->json([
-            'status' => __($status),
-        ]);
+        return response()->noContent();
     }
 
     /**
@@ -83,17 +94,17 @@ class AdminAuthController extends Controller
             );
         }
 
-        return response()->json([
-            'message' => __($status),
-        ]);
+        return response()->noContent();
     }
 
     /**
      * Logout.
      */
-    public function logout()
+    public function logout(Request $request)
     {
         Auth::guard('admin')->logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
         return response(status: 204);
     }
 }

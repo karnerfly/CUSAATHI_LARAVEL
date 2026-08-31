@@ -18,6 +18,7 @@ class PermissionResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'ability' => $this->ability,
+            'category' => $this->category,
             'active' => $this->pivot->active,
             'assigned_at' => $this->pivot->created_at,
             'created_at' => $this->created_at,

@@ -18,11 +18,10 @@ class AdminResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'email' => $this->email,
-            'profileUrl' => $this->profile_url,
+            'profile_url' => $this->profile_url,
             'active' => $this->active,
-            // 'permissions' => $this->permissions,
-            'createdAt' => $this->created_at,
-            'updatedAt' => $this->updated_at,
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
         ];
     }
 }

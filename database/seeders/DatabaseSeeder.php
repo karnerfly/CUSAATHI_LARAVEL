@@ -24,26 +24,32 @@ class DatabaseSeeder extends Seeder
             [
                 'name' => 'create permission',
                 'ability' => 'create:permission',
+                'category' => 'permissions',
             ],
             [
                 'name' => 'read permission',
                 'ability' => 'read:permission',
+                'category' => 'permissions',
             ],
             [
                 'name' => 'update permission',
                 'ability' => 'update:permission',
+                'category' => 'permissions',
             ],
             [
                 'name' => 'delete permission',
                 'ability' => 'delete:permission',
+                'category' => 'permissions',
             ],
             [
                 'name' => 'assign permission',
                 'ability' => 'assign:permission',
+                'category' => 'permissions',
             ],
             [
                 'name' => 'revoke permission',
                 'ability' => 'revoke:permission',
+                'category' => 'permissions',
             ],
         ]);
 
