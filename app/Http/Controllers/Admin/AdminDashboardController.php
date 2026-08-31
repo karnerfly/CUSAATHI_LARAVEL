@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\ChangeNameReqest;
 use App\Http\Requests\Admin\ChangePasswordReqest;
+use App\Http\Requests\Admin\UploadProfilePictureReqest;
 use App\Http\Resources\Admin\AdminResource;
 use App\Models\Admin;
 use Illuminate\Http\Request;
@@ -45,6 +46,9 @@ class AdminDashboardController extends Controller
         return response()->noContent();
     }
 
+    /**
+     * Change current admin name
+     */
     public function change_name(ChangeNameReqest $request)
     {
         $name = $request->input(['name']);
@@ -53,6 +57,23 @@ class AdminDashboardController extends Controller
         $admin = Admin::find($admin->id);
 
         $admin->name = $name;
+        $admin->save();
+
+        return response()->noContent();
+    }
+
+    /**
+     * Upload profile picture
+     */
+    public function upload_profile_picture(UploadProfilePictureReqest $request)
+    {
+        $file = $request->file('file');
+        $admin = $request->user('admin');
+        $admin = Admin::find($admin->id);
+
+        $path = $file->store('profiles', 'public');
+
+        $admin->profile_url = $path;
         $admin->save();
 
         return response()->noContent();

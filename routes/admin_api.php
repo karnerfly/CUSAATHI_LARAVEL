@@ -29,4 +29,5 @@ Route::middleware(['auth:sanctum', EnsureAdmin::class])->group(function () {
     Route::get('me', [AdminDashboardController::class, 'get_current_admin']);
     Route::post('change-password', [AdminDashboardController::class, 'change_password']);
     Route::patch('name', [AdminDashboardController::class, 'change_name']);
+    Route::put('picture', [AdminDashboardController::class, 'upload_profile_picture']);
 });

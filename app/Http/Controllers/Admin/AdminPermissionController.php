@@ -29,7 +29,7 @@ class AdminPermissionController extends Controller
     }
 
     /**
-     * Store a newly created permission in storage.
+     * Store a newly created permission.
      */
     public function store(StorePermissionRequest $request)
     {
@@ -53,7 +53,7 @@ class AdminPermissionController extends Controller
     }
 
     /**
-     * Update the specified permission in storage.
+     * Update the specified permission.
      */
     public function update(StorePermissionRequest $request, string $id)
     {
@@ -70,7 +70,7 @@ class AdminPermissionController extends Controller
     }
 
     /**
-     * Remove the specified permission from storage.
+     * Remove the specified permission.
      */
     public function destroy(string $id)
     {
