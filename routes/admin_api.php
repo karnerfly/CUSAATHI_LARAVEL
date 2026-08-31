@@ -16,8 +16,13 @@ Route::prefix('auth')->group(function () {
 Route::prefix('permissions')
     ->middleware(['auth:sanctum', EnsureAdmin::class])
     ->group(function () {
-        Route::post('', [AdminPermissionController::class, 'create'])->can('create:permission');
-        Route::get('', [AdminPermissionController::class, 'get'])->can('read:permission');
+        Route::get('', [AdminPermissionController::class, 'index'])->can('read:permission');
+        Route::get('/{id}', [AdminPermissionController::class, 'show'])->can('read:permission');
+        Route::post('', [AdminPermissionController::class, 'store'])->can('create:permission');
+        Route::put('/{id}', [AdminPermissionController::class, 'update'])->can('update:permission');
+        Route::delete('/{id}', [AdminPermissionController::class, 'destroy'])->can('delete:permission');
+        Route::post('/assign', [AdminPermissionController::class, 'assign'])->can('assign:permission');
+        Route::post('/revoke', [AdminPermissionController::class, 'revoke'])->can('revoke:permission');
     });
 
 Route::middleware(['auth:sanctum', EnsureAdmin::class])->group(function () {

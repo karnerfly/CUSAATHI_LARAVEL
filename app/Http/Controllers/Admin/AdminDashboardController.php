@@ -8,7 +8,10 @@ use Illuminate\Http\Request;
 
 class AdminDashboardController extends Controller
 {
-    function get_current_admin(Request $request)
+    /**
+     * Get details of current admin
+     */
+    public function get_current_admin(Request $request)
     {
         return new AdminResource($request->user('admin'));
     }

@@ -5,7 +5,7 @@ namespace App\Http\Requests\Admin;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class CreatePermissionRequest extends FormRequest
+class ManagePermissionRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,8 +23,8 @@ class CreatePermissionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'min:5', 'max:100'],
-            'ability' => ['required', 'string', 'min:5', 'max:100', 'regex:/^[a-z]+:[a-z]+$/'],
+            'admin_id' => ['required', 'integer', 'gt:0'],
+            'permission_id' => ['required', 'integer', 'gt:0'],
         ];
     }
 }

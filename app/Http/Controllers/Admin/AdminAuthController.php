@@ -16,11 +16,12 @@ use Illuminate\Validation\ValidationException;
 
 class AdminAuthController extends Controller
 {
-    function login(LoginRequest $request)
+    /**
+     * Login.
+     */
+    public function login(LoginRequest $request)
     {
-        $credentials = $request->only(['email', 'password']);
-
-        if (!Auth::guard('admin')->attempt($credentials)) {
+        if (!Auth::guard('admin')->attempt($request->only(['email', 'password']))) {
             throw ValidationException::withMessages([
                 'message' => 'invalid email or password.',
             ]);
@@ -34,7 +35,10 @@ class AdminAuthController extends Controller
         ]);
     }
 
-    function forgot_password(ForgotPasswordRequest $request)
+    /**
+     * Request for password reset link.
+     */
+    public function forgot_password(ForgotPasswordRequest $request)
     {
         $status = Password::broker('admins')->sendResetLink($request->only('email'));
 
@@ -49,7 +53,10 @@ class AdminAuthController extends Controller
         ]);
     }
 
-    function reset_password(ResetPasswordRequest $request)
+    /**
+     *  Reset password via token.
+     */
+    public function reset_password(ResetPasswordRequest $request)
     {
         $status = Password::broker('admins')->reset(
             $request->only('email', 'password', 'password_confirmation', 'token'),
@@ -78,7 +85,10 @@ class AdminAuthController extends Controller
         ]);
     }
 
-    function logout()
+    /**
+     * Logout.
+     */
+    public function logout()
     {
         Auth::guard('admin')->logout();
         return response(status: 204);
