@@ -108,6 +108,16 @@ class AdminPermissionController extends Controller
             );
         }
 
+        $permission = Permission::find($permission_id);
+        if ($permission == null) {
+            return response()->json(
+                [
+                    'message' => 'permission does not exists.',
+                ],
+                404,
+            );
+        }
+
         if ($admin->permissions()->where('id', $permission_id)->exists()) {
             throw ValidationException::withMessages([
                 'permission_id' => 'permission already assigned to this admin.',
