@@ -29,7 +29,7 @@ ENV REAL_IP_HEADER 1
 
 ENV COMPOSER_ALLOW_SUPERUSER 1
 
-RUN chmod +x /var/www/html/scripts/00-laravel-deploy.sh
+RUN chmod +x /var/www/html/scripts/*.sh
 
 COPY conf/nginx/nginx-site.conf /etc/nginx/http.d/default.conf
 
