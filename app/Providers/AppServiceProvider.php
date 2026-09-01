@@ -25,15 +25,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(UrlGenerator $url): void
     {
-        if (env('APP_ENV') == 'production') {
+        if (app()->environment('production')) {
             $url->forceScheme('https');
         }
-
-        JsonResource::withoutWrapping();
-
-        Gate::define('viewApiDocs', function ($user) {
-            return true;
-        });
 
         if (!app()->runningInConsole() && Schema::hasTable('permissions')) {
             Permission::all()->each(function ($permission) {
@@ -42,5 +36,7 @@ class AppServiceProvider extends ServiceProvider
                 });
             });
         }
+
+        JsonResource::withoutWrapping();
     }
 }
