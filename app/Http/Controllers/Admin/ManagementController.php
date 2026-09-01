@@ -94,6 +94,7 @@ class ManagementController extends Controller
                 404,
             );
         }
+
         $session->revoked = true;
         $session->save();
 
@@ -114,6 +115,7 @@ class ManagementController extends Controller
                 404,
             );
         }
+
         $session->revoked = false;
         $session->save();
 

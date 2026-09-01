@@ -5,7 +5,6 @@ use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ManagementController;
 use App\Http\Controllers\Admin\PermissionController;
-use App\Http\Middleware\EnsureAdmin;
 
 Route::controller(AuthController::class)
     ->prefix('auth')
@@ -16,8 +15,19 @@ Route::controller(AuthController::class)
         Route::post('logout', 'logout');
     });
 
+Route::controller(DashboardController::class)
+    ->middleware(['auth:sanctum', 'session.revoked', 'ensure.admin'])
+    ->group(function () {
+        Route::get('me', 'get_current_admin');
+        Route::get('sessions', 'get_sessions');
+        Route::delete('sessions/{session}', 'delete_session');
+        Route::post('change-password', 'change_password');
+        Route::patch('name', 'change_name');
+        Route::put('picture', 'upload_profile_picture');
+    });
+
 Route::controller(PermissionController::class)
-    ->middleware(['auth:sanctum', EnsureAdmin::class])
+    ->middleware(['auth:sanctum', 'session.revoked', 'ensure.admin'])
     ->group(function () {
         Route::get('permissions', 'index')->can('read:permission');
         Route::get('permissions/{permission}', 'show')->can('read:permission');
@@ -31,19 +41,8 @@ Route::controller(PermissionController::class)
         Route::delete('{admin}/permissions/{permission}', 'revoke')->can('revoke:permission');
     });
 
-Route::controller(DashboardController::class)
-    ->middleware(['auth:sanctum', 'session.revoked', EnsureAdmin::class])
-    ->group(function () {
-        Route::get('me', 'get_current_admin');
-        Route::get('sessions', 'get_sessions');
-        Route::delete('sessions/{session}', 'delete_session');
-        Route::post('change-password', 'change_password');
-        Route::patch('name', 'change_name');
-        Route::put('picture', 'upload_profile_picture');
-    });
-
 Route::controller(ManagementController::class)
-    ->middleware(['auth:sanctum', 'session.revoked', EnsureAdmin::class])
+    ->middleware(['auth:sanctum', 'session.revoked', 'ensure.admin'])
     ->group(function () {
         Route::get('', 'get_all_admins')->can('read:admin');
         Route::post('', 'create_admin')->can('create:admin');
