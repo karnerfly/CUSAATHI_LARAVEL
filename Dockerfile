@@ -19,7 +19,7 @@ RUN docker-php-ext-install \
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-COPY . /var/www/html
+COPY . .
 
 ENV SKIP_COMPOSER 1
 ENV WEBROOT /var/www/html/public
@@ -32,6 +32,17 @@ ENV COMPOSER_ALLOW_SUPERUSER 1
 ENV TMPDIR=/tmp
 
 RUN mkdir -p /tmp && chmod 1777 /tmp
+
+RUN mkdir -p \
+    storage/framework/cache \
+    storage/framework/sessions \
+    storage/framework/views \
+    bootstrap/cache \
+    /tmp && \
+    chown -R www-data:www-data storage bootstrap/cache && \
+    chmod -R 775 storage bootstrap/cache && \
+    chmod 1777 /tmp
+
 
 RUN chmod +x /var/www/html/scripts/*.sh
 
