@@ -29,9 +29,12 @@ ENV REAL_IP_HEADER 1
 
 ENV COMPOSER_ALLOW_SUPERUSER 1
 
+ENV TMPDIR=/tmp
+
+RUN mkdir -p /tmp && chmod 1777 /tmp
+
 RUN chmod +x /var/www/html/scripts/*.sh
 
 COPY conf/nginx/nginx-site.conf /etc/nginx/http.d/default.conf
-
 
 CMD ["/var/www/html/scripts/start.sh"]
