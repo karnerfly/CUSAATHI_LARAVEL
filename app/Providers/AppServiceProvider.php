@@ -31,6 +31,10 @@ class AppServiceProvider extends ServiceProvider
 
         JsonResource::withoutWrapping();
 
+        Gate::define('viewApiDocs', function ($user) {
+            return true;
+        });
+
         if (!app()->runningInConsole() && Schema::hasTable('permissions')) {
             Permission::all()->each(function ($permission) {
                 Gate::define($permission->ability, function (Admin $admin) use ($permission) {
