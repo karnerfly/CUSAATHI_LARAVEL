@@ -17,61 +17,51 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        Permission::upsert(
+        Permission::factory()->createMany([
             [
-                [
-                    'name' => 'create permission',
-                    'ability' => 'create:permission',
-                    'category' => 'permissions',
-                ],
-                [
-                    'name' => 'read permission',
-                    'ability' => 'read:permission',
-                    'category' => 'permissions',
-                ],
-                [
-                    'name' => 'update permission',
-                    'ability' => 'update:permission',
-                    'category' => 'permissions',
-                ],
-                [
-                    'name' => 'delete permission',
-                    'ability' => 'delete:permission',
-                    'category' => 'permissions',
-                ],
-                [
-                    'name' => 'assign permission',
-                    'ability' => 'assign:permission',
-                    'category' => 'permissions',
-                ],
-                [
-                    'name' => 'revoke permission',
-                    'ability' => 'revoke:permission',
-                    'category' => 'permissions',
-                ],
+                'name' => 'create permission',
+                'ability' => 'create:permission',
+                'category' => 'permissions',
             ],
-            ['ability'],
-            ['name', 'category'],
-        );
+            [
+                'name' => 'read permission',
+                'ability' => 'read:permission',
+                'category' => 'permissions',
+            ],
+            [
+                'name' => 'update permission',
+                'ability' => 'update:permission',
+                'category' => 'permissions',
+            ],
+            [
+                'name' => 'delete permission',
+                'ability' => 'delete:permission',
+                'category' => 'permissions',
+            ],
+            [
+                'name' => 'assign permission',
+                'ability' => 'assign:permission',
+                'category' => 'permissions',
+            ],
+            [
+                'name' => 'revoke permission',
+                'ability' => 'revoke:permission',
+                'category' => 'permissions',
+            ],
+        ]);
 
-        $admin = Admin::updateOrCreate(
-            ['email' => 'toufique26ajay@gmail.com'],
-            [
-                'name' => 'Toufique Al Ajay',
-            ],
-        );
+        $admin = Admin::factory()->create([
+            'name' => 'Toufique Al Ajay',
+            'email' => 'toufique26ajay@gmail.com',
+        ]);
 
         $permissions = Permission::all();
 
-        $adminPermissions = $permissions
-            ->map(
-                fn($permission) => [
-                    'admin_id' => $admin->id,
-                    'permission_id' => $permission->id,
-                ],
-            )
-            ->all();
-
-        DB::table('admin_permission')->upsert($adminPermissions, ['admin_id', 'permission_id'], []);
+        foreach ($permissions as $permission) {
+            DB::table('admin_permission')->insert([
+                'admin_id' => $admin->id,
+                'permission_id' => $permission->id,
+            ]);
+        }
     }
 }

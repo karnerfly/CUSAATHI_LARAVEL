@@ -11,8 +11,4 @@ php artisan route:cache
 echo "Running migrations..."
 php artisan migrate --force
 
-echo "Running database seeders..."
-
-php artisan db:seed --force
-
 echo "Laravel deployment completed."
