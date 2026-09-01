@@ -77,7 +77,8 @@ class PermissionController extends Controller
     }
 
     /**
-     *  Get permissions of the specified admin.
+     * Get permissions of the specified admin.
+     * @response PermissionResource[]
      */
     public function get_admin_permissions(Admin $admin)
     {

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AuditController;
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ManagementController;
@@ -56,4 +57,12 @@ Route::controller(ManagementController::class)
 
         Route::delete('{admin}', 'delete_admin')->can('delete:admin');
         Route::post('{admin}/restore', 'restore_admin')->withTrashed()->can('restore:admin');
+    });
+
+Route::controller(AuditController::class)
+    ->prefix('audits')
+    ->middleware(['auth:sanctum', 'session.revoked', 'ensure.admin'])
+    ->group(function () {
+        Route::get('', 'index')->can('read:audit');
+        Route::get('{audit}', 'show')->can('read:audit');
     });

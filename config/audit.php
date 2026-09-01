@@ -7,7 +7,6 @@ use OwenIt\Auditing\Resolvers\UserAgentResolver;
 use OwenIt\Auditing\Resolvers\UserResolver;
 
 return [
-
     'enabled' => env('AUDITING_ENABLED', true),
 
     /*
@@ -31,11 +30,8 @@ return [
     */
 
     'user' => [
-        'morph_prefix' => 'user',
-        'guards' => [
-            'web',
-            'api',
-        ],
+        'morph_prefix' => 'actor',
+        'guards' => ['web', 'admin', 'api'],
         'resolver' => UserResolver::class,
     ],
 
@@ -62,12 +58,7 @@ return [
     |
     */
 
-    'events' => [
-        'created',
-        'updated',
-        'deleted',
-        'restored',
-    ],
+    'events' => ['created', 'updated', 'deleted', 'restored'],
 
     /*
     |--------------------------------------------------------------------------
@@ -108,9 +99,7 @@ return [
     */
 
     'empty_values' => true,
-    'allowed_empty_values' => [
-        'retrieved',
-    ],
+    'allowed_empty_values' => ['retrieved'],
 
     /*
     |--------------------------------------------------------------------------

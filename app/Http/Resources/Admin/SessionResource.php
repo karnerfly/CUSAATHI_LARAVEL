@@ -2,11 +2,16 @@
 
 namespace App\Http\Resources\Admin;
 
+use App\Models\Session;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Jenssegers\Agent\Agent;
 
+/**
+ * @mixin Session
+ * @property boolean $current
+ */
 class SessionResource extends JsonResource
 {
     /**
@@ -16,7 +21,7 @@ class SessionResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $agent = new Agent;
+        $agent = new Agent();
         $agent->setUserAgent($this->user_agent);
 
         return [
