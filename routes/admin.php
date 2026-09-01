@@ -21,31 +21,40 @@ Route::controller(PermissionController::class)
     ->group(function () {
         Route::get('permissions', 'index')->can('read:permission');
         Route::get('permissions/{permission}', 'show')->can('read:permission');
+
         Route::post('permissions', 'store')->can('create:permission');
         Route::put('permissions/{permission}', 'update')->can('update:permission');
         Route::delete('permissions/{permission}', 'destroy')->can('delete:permission');
+
         Route::post('{admin}/permissions', 'assign')->can('assign:permission');
         Route::get('{admin}/permissions', 'get_admin_permissions')->can('read:permission');
         Route::delete('{admin}/permissions/{permission}', 'revoke')->can('revoke:permission');
     });
 
 Route::controller(DashboardController::class)
-    ->middleware(['auth:sanctum', EnsureAdmin::class])
+    ->middleware(['auth:sanctum', 'session.revoked', EnsureAdmin::class])
     ->group(function () {
         Route::get('me', 'get_current_admin');
         Route::get('sessions', 'get_sessions');
+        Route::delete('sessions/{session}', 'delete_session');
         Route::post('change-password', 'change_password');
         Route::patch('name', 'change_name');
         Route::put('picture', 'upload_profile_picture');
     });
 
 Route::controller(ManagementController::class)
-    ->middleware(['auth:sanctum', EnsureAdmin::class])
+    ->middleware(['auth:sanctum', 'session.revoked', EnsureAdmin::class])
     ->group(function () {
         Route::get('', 'get_all_admins')->can('read:admin');
         Route::post('', 'create_admin')->can('create:admin');
+
         Route::post('{admin}/activate', 'activate_admin')->can('activate:admin');
         Route::post('{admin}/deactivate', 'deactivate_admin')->can('deactivate:admin');
+
+        Route::get('{admin}/sessions', 'get_admin_sessions')->can('read:admin-session');
+        Route::delete('{admin}/sessions/{session}', 'revoke_admin_session')->can('revoke:admin-session');
+        Route::post('{admin}/sessions/{session}/restore', 'restore_admin_session')->can('restore:admin-session');
+
         Route::delete('{admin}', 'delete_admin')->can('delete:admin');
         Route::post('{admin}/restore', 'restore_admin')->withTrashed()->can('restore:admin');
     });

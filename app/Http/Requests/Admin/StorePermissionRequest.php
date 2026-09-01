@@ -23,8 +23,8 @@ class StorePermissionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'lowercase', 'min:5', 'max:100'],
-            'ability' => ['required', 'string', 'lowercase', 'min:5', 'max:100', 'regex:/^[a-z]+:[a-z]+$/'],
+            'name' => ['required', 'string', 'lowercase', 'min:5', 'max:100', 'regex:/^[a-z]+(?: [a-z]+)*$/'],
+            'ability' => ['required', 'string', 'lowercase', 'min:5', 'max:100', 'regex:/^[a-z-]+:[a-z-]+$/'],
             'category' => ['required', 'string', 'lowercase', 'min:5', 'max:50', 'regex:/^[a-z]+$/'],
         ];
     }

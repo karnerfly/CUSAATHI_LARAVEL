@@ -9,6 +9,7 @@ use App\Http\Requests\Admin\ChangePasswordReqest;
 use App\Http\Requests\Admin\UploadProfilePictureReqest;
 use App\Http\Resources\Admin\AdminResource;
 use App\Http\Resources\SessionResource;
+use App\Models\Session;
 use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -103,5 +104,17 @@ class DashboardController extends Controller
             });
 
         return SessionResource::collection($sessions);
+    }
+
+    /**
+     * Delete specified session
+     */
+    public function delete_session(Request $request, Session $session)
+    {
+        $admin = $request->user('admin');
+        $session = $admin->sessions()->where('id', $session->id)->firstOrFail();
+        $session->delete();
+
+        return response()->noContent();
     }
 }
