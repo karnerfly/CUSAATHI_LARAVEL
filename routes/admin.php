@@ -33,6 +33,7 @@ Route::controller(DashboardController::class)
     ->middleware(['auth:sanctum', EnsureAdmin::class])
     ->group(function () {
         Route::get('me', 'get_current_admin');
+        Route::get('sessions', 'get_sessions');
         Route::post('change-password', 'change_password');
         Route::patch('name', 'change_name');
         Route::put('picture', 'upload_profile_picture');

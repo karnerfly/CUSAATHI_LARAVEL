@@ -9,7 +9,6 @@ use App\Http\Requests\Admin\AssignPermissionsRequest;
 use App\Http\Requests\Admin\StorePermissionRequest;
 use App\Http\Resources\Admin\PermissionResource;
 use Dedoc\Scramble\Attributes\Group;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 #[Group('Admin Permission')]
 class PermissionController extends Controller
@@ -80,7 +79,7 @@ class PermissionController extends Controller
     /**
      *  Get permissions of the specified admin.
      */
-    public function get_admin_permissions(Admin $admin): AnonymousResourceCollection
+    public function get_admin_permissions(Admin $admin)
     {
         return PermissionResource::collection($admin->permissions()->orderBy('category')->get());
     }

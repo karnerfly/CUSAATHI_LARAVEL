@@ -8,6 +8,7 @@ use App\Http\Requests\Admin\ChangeNameReqest;
 use App\Http\Requests\Admin\ChangePasswordReqest;
 use App\Http\Requests\Admin\UploadProfilePictureReqest;
 use App\Http\Resources\Admin\AdminResource;
+use App\Http\Resources\SessionResource;
 use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -79,5 +80,28 @@ class DashboardController extends Controller
         $admin->save();
 
         return response()->noContent();
+    }
+
+    /**
+     * Get active sessions
+     */
+    public function get_sessions(Request $request)
+    {
+        $sid = $request->session()->getId();
+        $admin = $request->user('admin');
+        $sessions = $admin
+            ->sessions()
+            ->where('last_activity', '>=', now()->subMinutes(config('session.lifetime'))->getTimestamp())
+            ->orderBy('id')
+            ->get()
+            ->map(function ($session) use ($sid) {
+                $session->current = false;
+                if ($session->id == $sid) {
+                    $session->current = true;
+                }
+                return $session;
+            });
+
+        return SessionResource::collection($sessions);
     }
 }
