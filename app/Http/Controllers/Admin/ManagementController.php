@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreAdminRequest;
 use App\Http\Resources\Admin\SessionResource;
+use App\Models\Admin;
 use App\Models\Session;
 use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\Request;
@@ -74,6 +74,7 @@ class ManagementController extends Controller
                 if ($session->id == $sid) {
                     $session->current = true;
                 }
+
                 return $session;
             });
 
@@ -86,7 +87,7 @@ class ManagementController extends Controller
     public function revoke_admin_session(Request $request, Admin $admin, Session $session)
     {
         $session_exists = $admin->sessions()->where('id', $session->id)->exists();
-        if (!$session_exists) {
+        if (! $session_exists) {
             return response()->json(
                 [
                     'message' => 'Session does not belong to this admin.',
@@ -107,7 +108,7 @@ class ManagementController extends Controller
     public function restore_admin_session(Request $request, Admin $admin, Session $session)
     {
         $session_exists = $admin->sessions()->where('id', $session->id)->exists();
-        if (!$session_exists) {
+        if (! $session_exists) {
             return response()->json(
                 [
                     'message' => 'Session does not belong to this admin.',

@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\Admin;
-use App\Models\Permission;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\AssignPermissionsRequest;
 use App\Http\Requests\Admin\StorePermissionRequest;
 use App\Http\Resources\Admin\PermissionResource;
+use App\Models\Admin;
+use App\Models\Permission;
 use Dedoc\Scramble\Attributes\Group;
 
 #[Group('Admin Permission')]

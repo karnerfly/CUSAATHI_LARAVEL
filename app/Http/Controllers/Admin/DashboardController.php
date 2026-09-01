@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\ChangeNameReqest;
 use App\Http\Requests\Admin\ChangePasswordReqest;
 use App\Http\Requests\Admin\UploadProfilePictureReqest;
 use App\Http\Resources\Admin\AdminResource;
 use App\Http\Resources\SessionResource;
+use App\Models\Admin;
 use App\Models\Session;
 use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\Request;
@@ -35,7 +35,7 @@ class DashboardController extends Controller
 
         $admin = Admin::find($admin->id);
 
-        if (!Hash::check($validated['old_password'], $admin->password)) {
+        if (! Hash::check($validated['old_password'], $admin->password)) {
             return response()->json(
                 [
                     'message' => 'Unauthenticated.',
@@ -100,6 +100,7 @@ class DashboardController extends Controller
                 if ($session->id == $sid) {
                     $session->current = true;
                 }
+
                 return $session;
             });
 

@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\ForgotPasswordRequest;
 use App\Http\Requests\Admin\LoginRequest;
 use App\Http\Requests\Admin\ResetPasswordRequest;
 use App\Http\Resources\Admin\AdminResource;
+use App\Models\Admin;
 use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Http\Request;
@@ -30,7 +30,7 @@ class AuthController extends Controller
             'active' => true,
         ]);
 
-        if (!$auth_passed) {
+        if (! $auth_passed) {
             return response()->json(
                 [
                     'message' => 'Invalid email or password.',
@@ -105,6 +105,7 @@ class AuthController extends Controller
         Auth::guard('admin')->logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
+
         return response(status: 204);
     }
 }

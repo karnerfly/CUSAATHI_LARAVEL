@@ -19,7 +19,7 @@ class CheckSessionRevoked
         $sid = $request->session()->getId();
         $session = DB::table('sessions')->where('id', $sid)->first();
 
-        if (!$session || $session->revoked) {
+        if (! $session || $session->revoked) {
             return response()->json(
                 [
                     'message' => 'Unauthenticated.',

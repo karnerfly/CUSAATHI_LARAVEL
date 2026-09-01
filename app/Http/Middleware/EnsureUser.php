@@ -17,7 +17,7 @@ class EnsureUser
     public function handle(Request $request, Closure $next): Response
     {
         $user = $request->user('web');
-        if (!$user || !($user instanceof User)) {
+        if (! $user || ! ($user instanceof User)) {
             return response()->json(
                 [
                     'message' => 'Unauthenticated.',
@@ -25,6 +25,7 @@ class EnsureUser
                 401,
             );
         }
+
         return $next($request);
     }
 }

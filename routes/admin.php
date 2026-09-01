@@ -1,10 +1,10 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ManagementController;
 use App\Http\Controllers\Admin\PermissionController;
+use Illuminate\Support\Facades\Route;
 
 Route::controller(AuthController::class)
     ->prefix('auth')

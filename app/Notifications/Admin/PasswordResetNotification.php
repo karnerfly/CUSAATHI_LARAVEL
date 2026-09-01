@@ -3,7 +3,6 @@
 namespace App\Notifications\Admin;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
@@ -35,10 +34,10 @@ class PasswordResetNotification extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         $url =
-            config('app.admin_url') .
-            '/reset-password?token=' .
-            urlencode($this->token) .
-            '&email=' .
+            config('app.admin_url').
+            '/reset-password?token='.
+            urlencode($this->token).
+            '&email='.
             urlencode($notifiable->email);
 
         return new MailMessage()
@@ -56,7 +55,7 @@ class PasswordResetNotification extends Notification
     public function toArray(object $notifiable): array
     {
         return [
-                //
-            ];
+            //
+        ];
     }
 }

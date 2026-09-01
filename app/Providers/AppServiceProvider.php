@@ -29,7 +29,7 @@ class AppServiceProvider extends ServiceProvider
             $url->forceScheme('https');
         }
 
-        if (!app()->runningInConsole() && Schema::hasTable('permissions')) {
+        if (! app()->runningInConsole() && Schema::hasTable('permissions')) {
             Permission::all()->each(function ($permission) {
                 Gate::define($permission->ability, function (Admin $admin) use ($permission) {
                     return $admin->hasAbility($permission->ability);

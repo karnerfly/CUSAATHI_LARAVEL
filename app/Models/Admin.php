@@ -3,8 +3,9 @@
 namespace App\Models;
 
 use App\Notifications\Admin\PasswordResetNotification;
-use Illuminate\Database\Eloquent\Attributes\Hidden;
+use Database\Factories\AdminFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -12,12 +13,15 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Override;
+use OwenIt\Auditing\Auditable as AuditableTrait;
+use OwenIt\Auditing\Contracts\Auditable;
 
 #[Fillable(['name', 'email', 'password', 'active', 'profile_url'])]
 #[Hidden(['password'])]
-class Admin extends Authenticatable
+class Admin extends Authenticatable implements Auditable
 {
-    use HasFactory, Notifiable, SoftDeletes;
+    /** @use HasFactory<AdminFactory> */
+    use AuditableTrait, HasFactory, Notifiable, SoftDeletes;
 
     /**
      * Get the attributes that should be cast.
