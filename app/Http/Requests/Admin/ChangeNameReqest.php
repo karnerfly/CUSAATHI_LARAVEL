@@ -23,7 +23,7 @@ class ChangeNameReqest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'min:5', 'max:100'],
+            'name' => ['required', 'string', 'min:4', 'max:100', 'regex:/^[A-Za-z]+(?: [A-Za-z]+)*$/'],
         ];
     }
 }
