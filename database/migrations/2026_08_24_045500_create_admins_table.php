@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -19,7 +18,7 @@ return new class extends Migration
             $table->string('profile_url')->nullable();
             $table->boolean('active')->default(true);
             $table->timestampsTz();
-            $table->softDeletes();
+            $table->softDeletesTz();
         });
 
         Schema::create('permissions', function (Blueprint $table) {
@@ -34,7 +33,7 @@ return new class extends Migration
             $table->foreignId('admin_id')->constrained()->onDelete('cascade');
             $table->foreignId('permission_id')->constrained()->onDelete('cascade');
             $table->boolean('active')->default(true);
-            $table->timestampTz('created_at')->useCurrent();
+            $table->timestampTz('created_at')->nullable();
             $table->primary(['admin_id', 'permission_id']);
         });
     }
