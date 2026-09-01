@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Admin;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class AuditRequest extends FormRequest
+class IndexAuditRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -34,6 +34,7 @@ class AuditRequest extends FormRequest
             'sort' => ['nullable', 'in:created_at,event,user_id,auditable_id'],
             'order' => ['nullable', 'in:asc,desc'],
             'per_page' => ['nullable', 'integer', 'min:1', 'max:100'],
+            'page' => ['nullable', 'integer', 'min:1'],
         ];
     }
 }

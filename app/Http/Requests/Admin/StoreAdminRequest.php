@@ -25,7 +25,7 @@ class StoreAdminRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'min:4', 'max:100', 'regex:/^[A-Za-z]+(?: [A-Za-z]+)*$/'],
-            'email' => ['required', 'email', 'unique:admins'],
+            'email' => ['required', 'email', 'unique:admins', 'max:255'],
             'password' => ['required', 'string', 'confirmed', Password::min(8)->mixedCase()->numbers()->symbols()],
         ];
     }

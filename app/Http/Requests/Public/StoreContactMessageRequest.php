@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Requests\Admin;
+namespace App\Http\Requests\Public;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class StorePermissionRequest extends FormRequest
+class StoreContactMessageRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,9 +23,11 @@ class StorePermissionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'lowercase', 'min:4', 'max:100', 'regex:/^[a-z]+(?: [a-z]+)*$/'],
-            'ability' => ['required', 'string', 'lowercase', 'min:4', 'max:100', 'regex:/^[a-z-]+:[a-z-]+$/'],
-            'category' => ['required', 'string', 'lowercase', 'min:4', 'max:50', 'regex:/^[a-z]+$/'],
+            'name' => ['required', 'string', 'min:4', 'max:100'],
+            'email' => ['required', 'email', 'max:255'],
+            'phone' => ['nullable', 'string', 'max:20'],
+            'subject' => ['required', 'string', 'max:255'],
+            'message' => ['required', 'string'],
         ];
     }
 }

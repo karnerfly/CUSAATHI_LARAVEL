@@ -3,78 +3,61 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\AuditRequest;
+use App\Http\Requests\Admin\IndexAuditRequest;
 use App\Http\Resources\Audit\ActivityDetailResource;
 use App\Http\Resources\Audit\ActivityResource;
 use Dedoc\Scramble\Attributes\Group;
 use OwenIt\Auditing\Models\Audit;
 
-#[Group('Audit Management')]
+#[Group('Admin Audit Management')]
 class AuditController extends Controller
 {
     /**
      * Display a listing of the audits.
      */
-    public function index(AuditRequest $request)
+    public function index(IndexAuditRequest $request)
     {
-        $validated = $request->validated();
+        $query = Audit::query()
+            ->with(['user', 'auditable'])
+            ->select([
+                'id',
+                'event',
+                'actor_type',
+                'actor_id',
+                'auditable_type',
+                'auditable_id',
+                'created_at',
+                'updated_at',
+            ]);
 
-        $query = Audit::query()->with(['user', 'auditable']);
-        $query->select([
-            'id',
-            'event',
-            'actor_type',
-            'actor_id',
-            'auditable_type',
-            'auditable_id',
-            'created_at',
-            'updated_at',
-        ]);
-
-        if (!empty($validated['query'])) {
-            $q = $validated['query'];
-
+        $query->when($request->filled('query'), function ($query) use ($request) {
+            $q = $request->query;
             $query->whereHas('user', function ($query) use ($q) {
                 $query->where(function ($query) use ($q) {
                     $query->where('name', 'like', "%{$q}%")->orWhere('email', 'like', "%{$q}%");
                 });
             });
-        }
+        });
 
-        if (!empty($validated['event'])) {
-            $events = explode(',', $validated['event']);
-            $query->whereIn('event', $events);
-        }
+        $query->when($request->filled('event'), fn($query) => $query->whereIn('event', explode(',', $request->event)));
+        $query->when($request->filled('actor_type'), fn($query) => $query->where('actor_type', $request->actor_type));
+        $query->when($request->filled('actor_id'), fn($query) => $query->where('actor_id', $request->actor_id));
 
-        if (!empty($validated['actor_type'])) {
-            $query->where('actor_type', $validated['actor_type']);
-        }
+        $query->when(
+            $request->filled('auditable_type'),
+            fn($query) => $query->where('auditable_type', $request->auditable_type),
+        );
 
-        if (isset($validated['actor_id'])) {
-            $query->where('actor_id', $validated['actor_id']);
-        }
+        $query->when(
+            $request->filled('auditable_id'),
+            fn($query) => $query->where('auditable_id', $request->auditable_id),
+        );
 
-        if (!empty($validated['auditable_type'])) {
-            $query->where('auditable_type', $validated['auditable_type']);
-        }
+        $query->when($request->filled('from'), fn($query) => $query->whereDate('created_at', '>=', $request->from));
+        $query->when($request->filled('to'), fn($query) => $query->whereDate('created_at', '<=', $request->to));
+        $query->orderBy($request->string('sort', 'created_at'), $request->string('order', 'desc'));
 
-        if (isset($validated['auditable_id'])) {
-            $query->where('auditable_id', $validated['auditable_id']);
-        }
-
-        if (!empty($validated['from'])) {
-            $query->whereDate('created_at', '>=', $validated['from']);
-        }
-
-        if (!empty($validated['to'])) {
-            $query->whereDate('created_at', '<=', $validated['to']);
-        }
-
-        $sort = $validated['sort'] ?? 'created_at';
-        $order = $validated['order'] ?? 'desc';
-        $per_page = $validated['per_page'] ?? 25;
-
-        $audits = $query->orderBy($sort, $order)->paginate($per_page);
+        $audits = $query->paginate($request->integer('per_page', 25))->withQueryString();
 
         return ActivityResource::collection($audits);
     }

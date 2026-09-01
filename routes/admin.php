@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\AuditController;
 use App\Http\Controllers\Admin\AuthController;
+use App\Http\Controllers\Admin\ContactMessageController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ManagementController;
 use App\Http\Controllers\Admin\PermissionController;
@@ -65,4 +66,14 @@ Route::controller(AuditController::class)
     ->group(function () {
         Route::get('', 'index')->can('read:audit');
         Route::get('{audit}', 'show')->can('read:audit');
+    });
+
+Route::controller(ContactMessageController::class)
+    ->prefix('contact-messages')
+    ->middleware(['auth:sanctum', 'session.revoked', 'ensure.admin'])
+    ->group(function () {
+        Route::get('', 'index')->can('read:contact-message');
+        Route::get('{message}', 'show')->can('read:contact-message');
+        Route::patch('{message}/mark-as', 'mark_as')->can('update:contact-message');
+        Route::delete('{message}', 'destroy')->can('delete:contact-message');
     });

@@ -2,10 +2,12 @@
 
 namespace App\Http\Requests\Admin;
 
+use App\Enums\ContactMessageStatus;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
-class StorePermissionRequest extends FormRequest
+class MarkAsContactMessageRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,9 +25,7 @@ class StorePermissionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'lowercase', 'min:4', 'max:100', 'regex:/^[a-z]+(?: [a-z]+)*$/'],
-            'ability' => ['required', 'string', 'lowercase', 'min:4', 'max:100', 'regex:/^[a-z-]+:[a-z-]+$/'],
-            'category' => ['required', 'string', 'lowercase', 'min:4', 'max:50', 'regex:/^[a-z]+$/'],
+            'status' => ['required', 'string', Rule::enum(ContactMessageStatus::class)],
         ];
     }
 }
