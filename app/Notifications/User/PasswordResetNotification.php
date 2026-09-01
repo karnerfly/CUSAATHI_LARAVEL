@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Notifications\Admin;
+namespace App\Notifications\User;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class ResetPasswordNotification extends Notification
+class PasswordResetNotification extends Notification
 {
     use Queueable;
 
@@ -35,7 +35,7 @@ class ResetPasswordNotification extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         $url =
-            config('app.admin_url') .
+            config('app.client_url') .
             '/reset-password?token=' .
             urlencode($this->token) .
             '&email=' .

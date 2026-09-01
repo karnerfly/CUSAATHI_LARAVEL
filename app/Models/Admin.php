@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Notifications\Admin\ResetPasswordNotification;
+use App\Notifications\Admin\PasswordResetNotification;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Override;
 
 #[Fillable(['name', 'email', 'password', 'active', 'profile_url'])]
 #[Hidden(['password'])]
@@ -31,9 +32,10 @@ class Admin extends Authenticatable
         ];
     }
 
+    #[Override]
     public function sendPasswordResetNotification($token): void
     {
-        $this->notify(new ResetPasswordNotification($token));
+        $this->notify(new PasswordResetNotification($token));
     }
 
     public function permissions(): BelongsToMany
