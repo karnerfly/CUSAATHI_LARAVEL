@@ -24,7 +24,7 @@ class AuditRequest extends FormRequest
     {
         return [
             'query' => ['nullable', 'string', 'max:100'],
-            'event' => ['nullable', 'string', 'in:created,updated,deleted,restored'],
+            'event' => ['nullable', 'string', 'exists:audits,event'],
             'actor_id' => ['nullable', 'integer', 'exists:admins,id'],
             'actor_type' => ['nullable', 'string', 'max:255'],
             'auditable_type' => ['nullable', 'string', 'max:255'],

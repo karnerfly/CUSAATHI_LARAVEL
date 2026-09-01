@@ -9,6 +9,7 @@ use App\Http\Resources\Admin\PermissionResource;
 use App\Models\Admin;
 use App\Models\Permission;
 use Dedoc\Scramble\Attributes\Group;
+use OwenIt\Auditing\Facades\Auditor;
 
 #[Group('Admin Permission')]
 class PermissionController extends Controller
@@ -71,7 +72,18 @@ class PermissionController extends Controller
     public function assign(AssignPermissionsRequest $request, Admin $admin)
     {
         $permission_ids = $request->input('permission_ids');
-        $admin->permissions()->syncWithoutDetaching($permission_ids);
+        $changes = $admin->permissions()->syncWithoutDetaching($permission_ids);
+
+        if (!empty($changes['attached'])) {
+            $admin->auditEvent = 'permission_assigned';
+            $admin->isCustomEvent = true;
+            $admin->auditCustomOld = [];
+            $admin->auditCustomNew = [
+                'assigned_permission_ids' => $changes['attached'],
+            ];
+
+            Auditor::execute($admin);
+        }
 
         return response()->noContent();
     }
@@ -90,7 +102,17 @@ class PermissionController extends Controller
      */
     public function revoke(Admin $admin, Permission $permission)
     {
-        $admin->permissions()->detach($permission->id);
+        $detached_ids = $admin->permissions()->detach($permission->id);
+        if ($detached_ids > 0) {
+            $admin->auditEvent = 'permission_revoked';
+            $admin->isCustomEvent = true;
+            $admin->auditCustomOld = [
+                'revoked_permission_id' => $permission->id,
+            ];
+            $admin->auditCustomNew = [];
+
+            Auditor::execute($admin);
+        }
 
         return response()->noContent();
     }
