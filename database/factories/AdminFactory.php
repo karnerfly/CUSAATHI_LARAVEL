@@ -20,7 +20,7 @@ class AdminFactory extends Factory
     {
         return [
             'password' => Hash::make('password'),
-            'profile_url' => fake()->imageUrl(),
+            'profile_url' => null,
         ];
     }
 }
