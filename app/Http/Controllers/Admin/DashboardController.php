@@ -30,12 +30,12 @@ class DashboardController extends Controller
      */
     public function change_password(ChangePasswordReqest $request)
     {
-        $validated = $request->only(['old_password', 'password', 'password_confirmation']);
+        $validated = $request->validated();
         $admin = $request->user('admin');
 
         $admin = Admin::find($admin->id);
 
-        if (! Hash::check($validated['old_password'], $admin->password)) {
+        if (!Hash::check($validated['old_password'], $admin->password)) {
             return response()->json(
                 [
                     'message' => 'Unauthenticated.',

@@ -27,7 +27,7 @@ class PermissionController extends Controller
      */
     public function store(StorePermissionRequest $request)
     {
-        $permission = Permission::create($request->only(['name', 'ability', 'category']));
+        $permission = Permission::create($request->validated());
 
         return response()->json(
             [
@@ -51,7 +51,7 @@ class PermissionController extends Controller
      */
     public function update(StorePermissionRequest $request, Permission $permission)
     {
-        $permission->update($request->all(['name', 'ability', 'category']));
+        $permission->update($request->validated());
 
         return response()->noContent();
     }

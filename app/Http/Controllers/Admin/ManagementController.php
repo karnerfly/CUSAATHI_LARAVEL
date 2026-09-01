@@ -26,7 +26,7 @@ class ManagementController extends Controller
      */
     public function create_admin(StoreAdminRequest $request)
     {
-        $admin = Admin::create($request->only(['name', 'email', 'password']));
+        $admin = Admin::create($request->validated());
         $admin->refresh();
 
         return response()->json(

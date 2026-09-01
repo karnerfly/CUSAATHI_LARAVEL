@@ -30,7 +30,7 @@ class AuthController extends Controller
             'active' => true,
         ]);
 
-        if (! $auth_passed) {
+        if (!$auth_passed) {
             return response()->json(
                 [
                     'message' => 'Invalid email or password.',
@@ -72,18 +72,15 @@ class AuthController extends Controller
      */
     public function reset_password(ResetPasswordRequest $request)
     {
-        $status = Password::broker('admins')->reset(
-            $request->only('email', 'password', 'password_confirmation', 'token'),
-            function (Admin $admin, string $password) {
-                $admin->forceFill([
-                    'password' => Hash::make($password),
-                ]);
+        $status = Password::broker('admins')->reset($request->validated(), function (Admin $admin, string $password) {
+            $admin->forceFill([
+                'password' => Hash::make($password),
+            ]);
 
-                $admin->save();
+            $admin->save();
 
-                event(new PasswordReset($admin));
-            },
-        );
+            event(new PasswordReset($admin));
+        });
 
         if ($status !== Password::PasswordReset) {
             return response()->json(
