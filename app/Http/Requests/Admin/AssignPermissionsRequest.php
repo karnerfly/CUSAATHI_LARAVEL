@@ -24,7 +24,29 @@ class AssignPermissionsRequest extends FormRequest
     {
         return [
             'permission_ids' => ['required', 'array', 'min:1', 'max:25'],
-            'permission_ids.*' => ['required', 'integer', 'gt:0'],
+            'permission_ids.*' => ['integer', 'distinct', 'exists:permissions,id'],
+        ];
+    }
+
+    /**
+     * Custom attribute names for validation keys.
+     */
+    public function attributes(): array
+    {
+        return [
+            'permission_ids' => 'permissions',
+            'permission_ids.*' => 'permission',
+        ];
+    }
+
+    /**
+     * Custom message definitions (optional).
+     */
+    public function messages(): array
+    {
+        return [
+            'permission_ids.*.exists' => 'The :attribute is invalid.',
+            'permission_ids.*.distinct' => 'The :attribute list contains duplicate entries.',
         ];
     }
 }

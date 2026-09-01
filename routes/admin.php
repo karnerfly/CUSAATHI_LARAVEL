@@ -45,4 +45,6 @@ Route::controller(ManagementController::class)
         Route::post('', 'create_admin')->can('create:admin');
         Route::post('{admin}/activate', 'activate_admin')->can('activate:admin');
         Route::post('{admin}/deactivate', 'deactivate_admin')->can('deactivate:admin');
+        Route::delete('{admin}', 'delete_admin')->can('delete:admin');
+        Route::post('{admin}/restore', 'restore_admin')->withTrashed()->can('restore:admin');
     });

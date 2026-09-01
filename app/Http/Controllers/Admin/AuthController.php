@@ -33,7 +33,7 @@ class AuthController extends Controller
         if (!$auth_passed) {
             return response()->json(
                 [
-                    'message' => 'invalid email or password.',
+                    'message' => 'Invalid email or password.',
                 ],
                 401,
             );
@@ -42,7 +42,7 @@ class AuthController extends Controller
         $request->session()->regenerate();
 
         return response()->json([
-            'message' => 'admin logged in successfully.',
+            'message' => 'Admin logged in successfully.',
             'admin' => new AdminResource($request->user('admin')),
         ]);
     }

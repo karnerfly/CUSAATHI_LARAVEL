@@ -12,7 +12,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 #[Fillable(['name', 'email', 'password', 'active', 'profile_url'])]
-#[Hidden(['password', 'deleted_at'])]
+#[Hidden(['password'])]
 class Admin extends Authenticatable
 {
     use HasFactory, Notifiable, SoftDeletes;

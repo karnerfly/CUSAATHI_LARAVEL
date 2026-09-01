@@ -31,7 +31,7 @@ class PermissionController extends Controller
 
         return response()->json(
             [
-                'message' => 'permission created.',
+                'message' => 'Permission created.',
                 'permission' => $permission,
             ],
             201,
@@ -53,13 +53,7 @@ class PermissionController extends Controller
     {
         $permission->update($request->all(['name', 'ability', 'category']));
 
-        return response()->json(
-            [
-                'message' => 'permission updated.',
-                'permission' => $permission,
-            ],
-            200,
-        );
+        return response()->noContent();
     }
 
     /**

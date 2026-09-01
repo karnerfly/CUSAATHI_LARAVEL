@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Admin;
 use App\Models\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreAdminRequest;
-use App\Http\Resources\Admin\AdminResource;
 use Dedoc\Scramble\Attributes\Group;
 
 #[Group('Admin Management')]
@@ -16,7 +15,7 @@ class ManagementController extends Controller
      */
     public function get_all_admins()
     {
-        return Admin::withoutTrashed()->orderBy('id')->get();
+        return Admin::withTrashed()->orderBy('id')->get();
     }
 
     /**
@@ -29,7 +28,7 @@ class ManagementController extends Controller
 
         return response()->json(
             [
-                'message' => 'admin created.',
+                'message' => 'Admin created.',
                 'admin' => $admin,
             ],
             201,
@@ -52,6 +51,26 @@ class ManagementController extends Controller
     public function activate_admin(Admin $admin)
     {
         $admin->update(['active' => true]);
+
+        return response()->noContent();
+    }
+
+    /**
+     * Soft Delete specified admin.
+     */
+    public function delete_admin(Admin $admin)
+    {
+        $admin->delete();
+
+        return response()->noContent();
+    }
+
+    /**
+     * Restore specified admin.
+     */
+    public function restore_admin(Admin $admin)
+    {
+        $admin->restore();
 
         return response()->noContent();
     }
