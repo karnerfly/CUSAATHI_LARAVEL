@@ -24,6 +24,8 @@ class ActivityDetailResource extends JsonResource
         return [
             'id' => $this->id,
             'event' => $this->event,
+            'tags' => $this->tags,
+            'url' => $this->url,
 
             'actor' => $this->user
                 ? [
@@ -45,7 +47,6 @@ class ActivityDetailResource extends JsonResource
                 'new' => $this->new_values,
             ],
 
-            'url' => $this->url,
             'client' => [
                 'ip_address' => $this->ip_address,
                 'device' => $agent->device(),
@@ -54,6 +55,7 @@ class ActivityDetailResource extends JsonResource
             ],
 
             'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
         ];
     }
 }
