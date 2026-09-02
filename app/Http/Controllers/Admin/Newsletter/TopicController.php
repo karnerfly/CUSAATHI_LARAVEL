@@ -18,7 +18,7 @@ class TopicController extends Controller
     {
         Gate::authorize('read:newsletter-topic');
 
-        return NewsLetterTopic::get();
+        return NewsletterTopic::get();
     }
 
     /**
