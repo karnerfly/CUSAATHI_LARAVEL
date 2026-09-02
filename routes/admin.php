@@ -88,9 +88,8 @@ Route::prefix('newsletter')
         Route::apiResource('subscribers', SubscriberController::class);
         Route::apiResource('campaigns', CampaignController::class);
 
+        Route::get('campaigns/{campaign}/analytics', [CampaignController::class, 'analytics'])->can('read:newsletter');
         Route::post('campaigns/{campaign}/dispatch', [CampaignController::class, 'dispatch'])->can(
             'dispatch:newsletter',
         );
-
-        Route::get('campaigns/{campaign}/analytics', [CampaignController::class, 'analytics'])->can('read:newsletter');
     });

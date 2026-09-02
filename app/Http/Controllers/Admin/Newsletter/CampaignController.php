@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\IndexCampaignRequest;
 use App\Http\Requests\Admin\StoreCampaignRequest;
 use App\Jobs\NewsletterCampaignJob;
-use App\Models\NewsLetter;
+use App\Models\Newsletter;
 use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Support\Facades\Gate;
 
@@ -20,7 +20,7 @@ class CampaignController extends Controller
     {
         Gate::authorize('read:newsletter');
 
-        $query = NewsLetter::with('topic:id,name,slug')->latest();
+        $query = Newsletter::with('topic:id,name,slug')->latest();
 
         if ($request->filled('status')) {
             match ($request->query('status')) {

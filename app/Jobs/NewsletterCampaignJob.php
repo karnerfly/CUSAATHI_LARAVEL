@@ -3,8 +3,8 @@
 namespace App\Jobs;
 
 use App\Mail\NewsletterCampaignMail;
-use App\Models\NewsLetter;
-use App\Models\NewsLetterLog;
+use App\Models\Newsletter;
+use App\Models\NewsletterLog;
 use App\Models\NewsletterSubscriber;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -22,7 +22,7 @@ class NewsletterCampaignJob implements ShouldQueue
     /**
      * Create a new job instance.
      */
-    public function __construct(public NewsLetter $campaign)
+    public function __construct(public Newsletter $campaign)
     {
         //
     }
@@ -42,7 +42,7 @@ class NewsletterCampaignJob implements ShouldQueue
 
         $subscriber_query->chunkById(250, function ($subscribers) {
             foreach ($subscribers as $subscriber) {
-                $log = NewsLetterLog::firstOrCreate(
+                $log = NewsletterLog::firstOrCreate(
                     [
                         'newsletter_id' => $this->campaign->id,
                         'subscriber_id' => $subscriber->id,

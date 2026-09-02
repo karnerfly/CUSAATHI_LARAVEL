@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Newsletter;
 
 use App\Http\Controllers\Controller;
-use App\Models\NewsLetterLog;
+use App\Models\NewsletterLog;
 use Dedoc\Scramble\Attributes\ExcludeAllRoutesFromDocs;
 use Illuminate\Http\Request;
 
@@ -13,7 +13,7 @@ class NewsletterTrackingController extends Controller
     private const GIF = '47494638396101000100800000ffffff00000021f90401000000002c00000000010001000002024401003b';
     public function track_open(Request $request, string $log_id)
     {
-        $log = NewsLetterLog::find($log_id);
+        $log = NewsletterLog::find($log_id);
 
         if ($log && is_null($log->opened_at)) {
             $log->update(['opened_at' => now()]);

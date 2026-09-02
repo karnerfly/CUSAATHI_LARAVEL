@@ -23,7 +23,6 @@ class NewsletterSubscriberDetailResource extends JsonResource
             'user_id' => $this->user_id,
             'email' => $this->email,
             'active' => $this->active,
-            'frequency' => $this->frequency,
             'verified_at' => $this->verified_at,
             'verification_token' => $this->verification_token,
             'unsubscribe_token' => $this->unsubscribe_token,

@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Newsletter;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Newsletter\NewsletterSubscribeRequest;
 use App\Models\NewsletterSubscriber;
-use App\Models\NewsLetterTopic;
+use App\Models\NewsletterTopic;
 use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Support\Str;
 
@@ -17,7 +17,7 @@ class NewsLetterSubscriptionController extends Controller
      */
     public function topics()
     {
-        return NewsLetterTopic::get();
+        return NewsletterTopic::get();
     }
 
     /**
@@ -29,8 +29,17 @@ class NewsLetterSubscriptionController extends Controller
 
         $subscriber = NewsletterSubscriber::firstOrNew(['email' => $validated['email']]);
 
-        $subscriber->frequency = $validated['frequency'];
+        if ($subscriber->active && $subscriber->verified_at) {
+            return response()->json(
+                [
+                    'message' => 'You are already subscribed to the newsletter.',
+                ],
+                409,
+            );
+        }
+
         $subscriber->unsubscribe_token = Str::random(48);
+        $subscriber->verification_token = Str::random(48);
         $subscriber->active = false;
         $subscriber->user_id = $request->user()?->id;
         $subscriber->save();
@@ -39,9 +48,7 @@ class NewsLetterSubscriptionController extends Controller
             $subscriber->topics()->sync($request->topic_ids ?? []);
         }
 
-        // TODO: Dispatch verification notification containing a frontend route like:
-        // https://frontend.app/newsletter/verify?token=XYZ
-        // Which subsequently calls POST /api/v1/newsletter/verify/XYZ
+        $subscriber->sendVerificationMail($subscriber->verification_token);
 
         return response()->json(
             [

@@ -19,10 +19,8 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $updated_at
  */
 #[Fillable(['subject', 'topic_id', 'content', 'scheduled_for', 'sent_at'])]
-class NewsLetter extends Model
+class Newsletter extends Model
 {
-    protected $table = 'newsletters';
-
     protected $casts = [
         'scheduled_for' => 'datetime',
         'sent_at' => 'datetime',
@@ -30,11 +28,11 @@ class NewsLetter extends Model
 
     public function topic(): BelongsTo
     {
-        return $this->belongsTo(NewsletterTopic::class, 'topic_id');
+        return $this->belongsTo(NewsletterTopic::class);
     }
 
     public function logs(): HasMany
     {
-        return $this->hasMany(NewsletterLog::class, 'newsletter_id');
+        return $this->hasMany(NewsletterLog::class);
     }
 }

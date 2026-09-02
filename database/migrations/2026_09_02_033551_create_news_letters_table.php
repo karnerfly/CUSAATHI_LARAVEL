@@ -14,7 +14,7 @@ return new class extends Migration {
             $table->id();
             $table->string('name');
             $table->string('slug')->unique();
-            $table->timestampsTz();
+            $table->timestamps();
         });
 
         Schema::create('newsletter_subscribers', function (Blueprint $table) {
@@ -22,11 +22,10 @@ return new class extends Migration {
             $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
             $table->string('email')->unique();
             $table->boolean('active')->default(false);
-            $table->string('frequency')->default('weekly');
-            $table->timestampTz('verified_at')->nullable();
+            $table->timestamp('verified_at')->nullable();
             $table->string('verification_token', 64)->nullable();
             $table->string('unsubscribe_token', 64)->unique();
-            $table->timestampsTz();
+            $table->timestamps();
         });
 
         Schema::create('newsletter_subscriber_topic', function (Blueprint $table) {
@@ -40,18 +39,18 @@ return new class extends Migration {
             $table->string('subject');
             $table->foreignId('topic_id')->nullable()->constrained('newsletter_topics')->nullOnDelete();
             $table->text('content');
-            $table->timestampTz('scheduled_for')->nullable();
-            $table->timestampTz('sent_at')->nullable();
-            $table->timestampsTz();
+            $table->timestamp('scheduled_for')->nullable();
+            $table->timestamp('sent_at')->nullable();
+            $table->timestamps();
         });
 
         Schema::create('newsletter_logs', function (Blueprint $table) {
             $table->id();
             $table->foreignId('newsletter_id')->constrained()->cascadeOnDelete();
             $table->foreignId('subscriber_id')->constrained('newsletter_subscribers')->cascadeOnDelete();
-            $table->timestampTz('sent_at');
-            $table->timestampTz('opened_at')->nullable();
-            $table->timestampsTz();
+            $table->timestamp('sent_at');
+            $table->timestamp('opened_at')->nullable();
+            $table->timestamps();
         });
     }
 

@@ -19,7 +19,7 @@ return new class extends Migration {
             $table->string('subject', 255);
             $table->text('message');
             $table->string('status')->default('unread')->index();
-            $table->timestampsTz();
+            $table->timestamps();
         });
     }
 

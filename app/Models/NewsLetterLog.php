@@ -17,10 +17,8 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $updated_at
  */
 #[Fillable(['newsletter_id', 'subscriber_id', 'sent_at', 'opened_at'])]
-class NewsLetterLog extends Model
+class NewsletterLog extends Model
 {
-    protected $table = 'newsletter_logs';
-
     protected $casts = [
         'sent_at' => 'datetime',
         'opened_at' => 'datetime',

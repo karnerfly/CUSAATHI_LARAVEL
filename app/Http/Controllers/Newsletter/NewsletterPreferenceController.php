@@ -17,7 +17,6 @@ class NewsletterPreferenceController extends Controller
     {
         return response()->json([
             'email' => $subscriber->email,
-            'frequency' => $subscriber->frequency,
             'selected_topics' => $subscriber->topics()->pluck('id'),
         ]);
     }
@@ -27,10 +26,6 @@ class NewsletterPreferenceController extends Controller
      */
     public function update(StoreNewsletterPreferenceRequest $request, NewsletterSubscriber $subscriber)
     {
-        $subscriber->update([
-            'frequency' => $request->input('frequency'),
-        ]);
-
         if ($request->has('topic_ids')) {
             $subscriber->topics()->sync($request->topic_ids ?? []);
         }

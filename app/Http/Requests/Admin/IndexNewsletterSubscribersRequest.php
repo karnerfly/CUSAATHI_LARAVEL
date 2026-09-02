@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests\Admin;
 
-use App\Enums\NewsLetterFrequency;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -28,7 +27,6 @@ class IndexNewsletterSubscribersRequest extends FormRequest
             'email' => ['sometimes', 'string', 'max:255'],
             'user_id' => ['sometimes', 'integer'],
             'active' => ['sometimes', 'boolean'],
-            'frequency' => ['sometimes', 'string', Rule::enum(NewsLetterFrequency::class)],
             'verified' => ['sometimes', 'boolean'],
             'per_page' => ['sometimes', 'integer', 'min:1', 'max:100'],
             'page' => ['sometimes', 'integer', 'min:1'],

@@ -27,7 +27,6 @@ class SubscriberController extends Controller
             'user_id',
             'active',
             'email',
-            'frequency',
             'verified_at',
             'created_at',
         ]);
@@ -42,10 +41,6 @@ class SubscriberController extends Controller
 
         $query->when($request->filled('active'), function ($query) use ($request) {
             $query->where('active', $request->boolean('active'));
-        });
-
-        $query->when($request->filled('frequency'), function ($query) use ($request) {
-            $query->where('frequency', $request->frequency);
         });
 
         $query->when($request->filled('verified'), function ($query) use ($request) {
@@ -76,9 +71,9 @@ class SubscriberController extends Controller
         Gate::authorize('update:newsletter-subscriber');
 
         DB::transaction(function () use ($subscriber, $request) {
-            $validated = $request->only(['email', 'frequency', 'active']);
+            $validated = $request->only(['email', 'active']);
 
-            if ($request->has('verified')) {
+            if ($request->filled('verified')) {
                 $validated['verified_at'] = $request->boolean('verified') ? $subscriber->verified_at ?? now() : null;
             }
 

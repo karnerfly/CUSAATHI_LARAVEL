@@ -16,10 +16,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property Carbon|null $updated_at
  */
 #[Fillable(['name', 'slug'])]
-class NewsLetterTopic extends Model
+class NewsletterTopic extends Model
 {
-    protected $table = 'newsletter_topics';
-
     public function subscribers(): BelongsToMany
     {
         return $this->belongsToMany(

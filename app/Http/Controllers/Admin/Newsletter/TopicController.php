@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin\Newsletter;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreNewsletterTopicRequest;
-use App\Models\NewsLetterTopic;
+use App\Models\NewsletterTopic;
 use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Support\Facades\Gate;
 
@@ -29,7 +29,7 @@ class TopicController extends Controller
         Gate::authorize('create:newsletter-topic');
 
         $validated = $request->validated();
-        $topic = NewsLetterTopic::create($validated);
+        $topic = NewsletterTopic::create($validated);
 
         return response()->json(
             [
@@ -43,7 +43,7 @@ class TopicController extends Controller
     /**
      * Display the specified topic.
      */
-    public function show(NewsLetterTopic $topic)
+    public function show(NewsletterTopic $topic)
     {
         Gate::authorize('read:newsletter-topic');
 
@@ -53,7 +53,7 @@ class TopicController extends Controller
     /**
      * Update the specified topic in storage.
      */
-    public function update(StoreNewsletterTopicRequest $request, NewsLetterTopic $topic)
+    public function update(StoreNewsletterTopicRequest $request, NewsletterTopic $topic)
     {
         Gate::authorize('update:newsletter-topic');
 
@@ -66,7 +66,7 @@ class TopicController extends Controller
     /**
      * Remove the specified topic from storage.
      */
-    public function destroy(NewsLetterTopic $topic)
+    public function destroy(NewsletterTopic $topic)
     {
         Gate::authorize('delete:newsletter-topic');
 

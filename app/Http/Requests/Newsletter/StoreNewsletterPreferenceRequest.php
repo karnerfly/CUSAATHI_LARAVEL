@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests\Newsletter;
 
-use App\Enums\NewsLetterFrequency;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -25,7 +24,6 @@ class StoreNewsletterPreferenceRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'frequency' => ['required', 'string', Rule::enum(NewsLetterFrequency::class)],
             'topic_ids' => ['nullable', 'array', 'min:1'],
             'topic_ids.*' => ['integer', 'distinct', 'exists:newsletter_topics,id'],
         ];

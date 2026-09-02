@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests\Newsletter;
 
-use App\Enums\NewsLetterFrequency;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -26,7 +25,6 @@ class NewsletterSubscribeRequest extends FormRequest
     {
         return [
             'email' => ['required', 'email', 'max:255'],
-            'frequency' => ['required', 'string', Rule::enum(NewsLetterFrequency::class)],
             'topic_ids' => ['sometimes', 'nullable', 'array', 'min:1'],
             'topic_ids.*' => ['integer', 'distinct', 'exists:newsletter_topics,id'],
         ];

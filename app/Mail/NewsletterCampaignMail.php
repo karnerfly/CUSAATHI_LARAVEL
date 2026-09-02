@@ -2,8 +2,8 @@
 
 namespace App\Mail;
 
-use App\Models\NewsLetter;
-use App\Models\NewsLetterLog;
+use App\Models\Newsletter;
+use App\Models\NewsletterLog;
 use App\Models\NewsletterSubscriber;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -14,7 +14,7 @@ use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Mail\Mailables\Headers;
 use Illuminate\Queue\SerializesModels;
 
-class NewsletterCampaignMail extends Mailable
+class NewsletterCampaignMail extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
@@ -22,9 +22,9 @@ class NewsletterCampaignMail extends Mailable
      * Create a new message instance.
      */
     public function __construct(
-        public NewsLetter $campaign,
+        public Newsletter $campaign,
         public NewsletterSubscriber $subscriber,
-        public NewsLetterLog $log,
+        public NewsletterLog $log,
     ) {
         //
     }
@@ -63,7 +63,8 @@ class NewsletterCampaignMail extends Mailable
     {
         $client_url = config('app.client_url');
         $tracking_url = route('api.newsletter.track-open', ['log_id' => $this->log->id]);
-        $unsubscribe_url = rtrim($client_url, '/') . '/newsletter/unsubscribe/' . $this->subscriber->unsubscribe_token;
+        $unsubscribe_url =
+            rtrim($client_url, '/') . '/newsletter/unsubscribe?token=' . $this->subscriber->unsubscribe_token;
 
         return <<<HTML
             {$this->campaign->content}

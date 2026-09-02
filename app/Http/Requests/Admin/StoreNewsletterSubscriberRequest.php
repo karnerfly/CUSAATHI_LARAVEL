@@ -2,10 +2,8 @@
 
 namespace App\Http\Requests\Admin;
 
-use App\Enums\NewsLetterFrequency;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 class StoreNewsletterSubscriberRequest extends FormRequest
 {
@@ -27,15 +25,9 @@ class StoreNewsletterSubscriberRequest extends FormRequest
         $subscriber_id = $this->route('subscriber')?->id ?? $this->route('subscriber');
 
         return [
-            'email' => [
-                'required',
-                'email',
-                'max:255',
-                Rule::unique('newsletter_subscribers', 'email')->ignore($subscriber_id),
-            ],
-            'frequency' => ['required', 'string', Rule::enum(NewsLetterFrequency::class)],
+            'email' => ['required', 'email', 'max:255', "unique:newsletter_subscribers,email,{$subscriber_id}"],
             'active' => ['required', 'boolean'],
-            'verified' => ['required', 'boolean'],
+            'verified' => ['nullable', 'boolean'],
             'topic_ids' => ['nullable', 'array', 'min:1'],
             'topic_ids.*' => ['integer', 'distinct', 'exists:newsletter_topics,id'],
         ];

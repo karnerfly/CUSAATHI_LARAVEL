@@ -17,8 +17,8 @@ return new class extends Migration {
             $table->string('password');
             $table->string('profile_url')->nullable();
             $table->boolean('active')->default(true);
-            $table->timestampsTz();
-            $table->softDeletesTz();
+            $table->timestamps();
+            $table->softDeletes();
         });
 
         Schema::create('permissions', function (Blueprint $table) {
@@ -26,14 +26,14 @@ return new class extends Migration {
             $table->string('name', 100)->unique();
             $table->string('ability', 100)->unique();
             $table->string('category', 50);
-            $table->timestampsTz();
+            $table->timestamps();
         });
 
         Schema::create('admin_permission', function (Blueprint $table) {
             $table->foreignId('admin_id')->constrained()->onDelete('cascade');
             $table->foreignId('permission_id')->constrained()->onDelete('cascade');
             $table->boolean('active')->default(true);
-            $table->timestampTz('created_at')->nullable();
+            $table->timestamp('created_at')->nullable();
             $table->primary(['admin_id', 'permission_id']);
         });
     }
