@@ -35,9 +35,10 @@ return Application::configure(basePath: dirname(__DIR__))
                 $model_class = $previous->getModel();
                 $model_name = Str::snake(class_basename($model_class), ' ');
                 $ids = $previous->getIds();
-                $id_string = implode(', ', $ids);
 
-                $message = !empty($ids) ? "No {$model_name} found with id [{$id_string}]." : "No {$model_name} found.";
+                $message = !empty($ids)
+                    ? "No {$model_name} found for the given value(s) [" . implode(', ', $ids) . '].'
+                    : "No {$model_name} found.";
 
                 return response()->json(
                     [

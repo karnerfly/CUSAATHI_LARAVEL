@@ -5,6 +5,8 @@ use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\ContactMessageController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ManagementController;
+use App\Http\Controllers\Admin\Newsletter\SubscriberController;
+use App\Http\Controllers\Admin\Newsletter\TopicController;
 use App\Http\Controllers\Admin\PermissionController;
 use Illuminate\Support\Facades\Route;
 
@@ -77,3 +79,11 @@ Route::controller(ContactMessageController::class)
         Route::patch('{message}/mark-as', 'mark_as')->can('update:contact-message');
         Route::delete('{message}', 'destroy')->can('delete:contact-message');
     });
+
+Route::prefix('newsletter')
+    ->middleware(['auth:sanctum', 'session.revoked', 'ensure.admin'])
+    ->group(function () {
+        Route::apiResource('topics', TopicController::class);
+        Route::apiResource('subscribers', SubscriberController::class);
+    })
+    ->can('manage:newsletter');
