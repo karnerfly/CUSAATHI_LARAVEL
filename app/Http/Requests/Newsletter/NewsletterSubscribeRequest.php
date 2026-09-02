@@ -26,9 +26,31 @@ class NewsletterSubscribeRequest extends FormRequest
     {
         return [
             'email' => ['required', 'email', 'max:255'],
-            'frequency' => ['required', Rule::enum(NewsLetterFrequency::class)],
+            'frequency' => ['required', 'string', Rule::enum(NewsLetterFrequency::class)],
             'topic_ids' => ['nullable', 'array', 'min:1'],
-            'topic_ids.*' => ['integer', 'exists:newsletter_topics,id'],
+            'topic_ids.*' => ['integer', 'distinct', 'exists:newsletter_topics,id'],
+        ];
+    }
+
+    /**
+     * Custom attribute names for validation keys.
+     */
+    public function attributes(): array
+    {
+        return [
+            'topic_ids' => 'topics',
+            'topic_ids.*' => 'topic',
+        ];
+    }
+
+    /**
+     * Custom message definitions (optional).
+     */
+    public function messages(): array
+    {
+        return [
+            'topic_ids.*.exists' => 'The :attribute is invalid.',
+            'topic_ids.*.distinct' => 'The :attribute list contains duplicate entries.',
         ];
     }
 }

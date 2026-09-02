@@ -25,11 +25,15 @@ class NewsletterPreferenceController extends Controller
      */
     public function update(UpdateNewsletterPreferenceRequest $request, NewsletterSubscriber $subscriber)
     {
-        $subscriber->update([
-            'frequency' => $request->input('frequency'),
-        ]);
+        if ($request->filled('frequency')) {
+            $subscriber->update([
+                'frequency' => $request->frequency,
+            ]);
+        }
 
-        $subscriber->topics()->sync($request->input('topic_ids'));
+        if ($request->has('topic_ids')) {
+            $subscriber->topics()->sync($request->topic_ids ?? []);
+        }
 
         return response()->noContent();
     }

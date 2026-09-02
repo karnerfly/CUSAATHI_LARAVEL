@@ -25,10 +25,10 @@ class IndexContactMessageRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'status' => ['nullable', 'string', Rule::enum(ContactMessageStatus::class)],
-            'search' => ['nullable', 'string', 'max:255'],
-            'per_page' => ['nullable', 'integer', 'min:1', 'max:100'],
-            'page' => ['nullable', 'integer', 'min:1'],
+            'status' => ['sometimes', 'string', Rule::enum(ContactMessageStatus::class)],
+            'search' => ['sometimes', 'string', 'max:255'],
+            'per_page' => ['sometimes', 'integer', 'min:1', 'max:100'],
+            'page' => ['sometimes', 'integer', 'min:1'],
         ];
     }
 }

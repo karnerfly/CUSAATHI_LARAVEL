@@ -23,18 +23,18 @@ class IndexAuditRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'query' => ['nullable', 'string', 'max:100'],
-            'event' => ['nullable', 'string', 'exists:audits,event'],
-            'actor_id' => ['nullable', 'integer', 'exists:admins,id'],
-            'actor_type' => ['nullable', 'string', 'max:255'],
-            'auditable_type' => ['nullable', 'string', 'max:255'],
-            'auditable_id' => ['nullable', 'integer'],
-            'from' => ['nullable', 'date'],
-            'to' => ['nullable', 'date', 'after_or_equal:from'],
-            'sort' => ['nullable', 'in:created_at,event,user_id,auditable_id'],
-            'order' => ['nullable', 'in:asc,desc'],
-            'per_page' => ['nullable', 'integer', 'min:1', 'max:100'],
-            'page' => ['nullable', 'integer', 'min:1'],
+            'query' => ['sometimes', 'string', 'max:100'],
+            'event' => ['sometimes', 'string', 'exists:audits,event'],
+            'actor_id' => ['sometimes', 'integer', 'exists:admins,id'],
+            'actor_type' => ['sometimes', 'string', 'max:255'],
+            'auditable_type' => ['sometimes', 'string', 'max:255'],
+            'auditable_id' => ['sometimes', 'integer'],
+            'from' => ['sometimes', 'date'],
+            'to' => ['sometimes', 'date', 'after_or_equal:from'],
+            'sort' => ['sometimes', 'in:created_at,event,user_id,auditable_id'],
+            'order' => ['sometimes', 'in:asc,desc'],
+            'per_page' => ['sometimes', 'integer', 'min:1', 'max:100'],
+            'page' => ['sometimes', 'integer', 'min:1'],
         ];
     }
 }

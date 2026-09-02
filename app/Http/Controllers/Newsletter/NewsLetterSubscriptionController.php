@@ -33,7 +33,9 @@ class NewsLetterSubscriptionController extends Controller
         $subscriber->user_id = $request->user()?->id;
         $subscriber->save();
 
-        $subscriber->topics()->sync($validated['topic_ids']);
+        if ($request->has('topic_ids')) {
+            $subscriber->topics()->sync($request->topic_ids ?? []);
+        }
 
         // TODO: Dispatch verification notification containing a frontend route like:
         // https://frontend.app/newsletter/verify?token=XYZ

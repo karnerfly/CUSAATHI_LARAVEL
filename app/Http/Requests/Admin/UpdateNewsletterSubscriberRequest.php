@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Requests\Newsletter;
+namespace App\Http\Requests\Admin;
 
 use App\Enums\NewsLetterFrequency;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class UpdateNewsletterPreferenceRequest extends FormRequest
+class UpdateNewsletterSubscriberRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,9 +24,20 @@ class UpdateNewsletterPreferenceRequest extends FormRequest
      */
     public function rules(): array
     {
+        $subscriber_id = $this->route('subscriber')?->id ?? $this->route('subscriber');
+
         return [
-            'frequency' => ['sometimes', 'string', Rule::enum(NewsLetterFrequency::class)],
-            'topic_ids' => ['nullable', 'array', 'min:1'],
+            'email' => [
+                'sometimes',
+                'required',
+                'email',
+                'max:255',
+                Rule::unique('newsletter_subscribers', 'email')->ignore($subscriber_id),
+            ],
+            'frequency' => ['sometimes', 'required', 'string', Rule::enum(NewsLetterFrequency::class)],
+            'active' => ['sometimes', 'required', 'boolean'],
+            'verified' => ['sometimes', 'required', 'boolean'],
+            'topic_ids' => ['sometimes', 'array'],
             'topic_ids.*' => ['integer', 'distinct', 'exists:newsletter_topics,id'],
         ];
     }

@@ -84,6 +84,10 @@ Route::prefix('newsletter')
     ->middleware(['auth:sanctum', 'session.revoked', 'ensure.admin'])
     ->group(function () {
         Route::apiResource('topics', TopicController::class);
-        Route::apiResource('subscribers', SubscriberController::class);
+
+        Route::get('subscribers', [SubscriberController::class, 'index']);
+        Route::get('subscribers/{subscriber}', [SubscriberController::class, 'show']);
+        Route::patch('subscribers/{subscriber}', [SubscriberController::class, 'update']);
+        Route::delete('subscribers/{subscriber}', [SubscriberController::class, 'destroy']);
     })
     ->can('manage:newsletter');

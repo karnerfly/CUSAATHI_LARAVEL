@@ -25,12 +25,12 @@ class IndexNewsletterSubscribersRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => ['nullable', 'string', 'max:255'],
-            'user_id' => ['nullable', 'integer'],
-            'active' => ['nullable', 'boolean'],
-            'frequency' => ['nullable', 'string', Rule::enum(NewsLetterFrequency::class)],
-            'verified' => ['nullable', 'boolean'],
-            'per_page' => ['nullable', 'integer', 'min:1', 'max:100'],
+            'email' => ['sometimes', 'string', 'max:255'],
+            'user_id' => ['sometimes', 'integer'],
+            'active' => ['sometimes', 'boolean'],
+            'frequency' => ['sometimes', 'string', Rule::enum(NewsLetterFrequency::class)],
+            'verified' => ['sometimes', 'boolean'],
+            'per_page' => ['sometimes', 'integer', 'min:1', 'max:100'],
         ];
     }
 }
