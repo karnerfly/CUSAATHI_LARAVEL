@@ -3,6 +3,7 @@ echo "Running composer"
 composer install --no-dev --working-dir=/var/www/html
 
 echo "Clearing old cache"
+composer dump-autoload
 php artisan optimize:clear
 
 echo "Caching config..."
