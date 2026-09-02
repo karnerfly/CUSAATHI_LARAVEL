@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
+use OwenIt\Auditing\Auditable as AuditableTrait;
+use OwenIt\Auditing\Contracts\Auditable;
 
 /**
  * Contact message submitted through the public contact form.
@@ -25,8 +27,10 @@ use Illuminate\Support\Carbon;
  * @property-read User|null $user
  */
 #[Fillable(['user_id', 'name', 'email', 'phone', 'subject', 'message', 'status'])]
-class ContactMessage extends Model
+class ContactMessage extends Model implements Auditable
 {
+    use AuditableTrait;
+
     protected function casts(): array
     {
         return [
