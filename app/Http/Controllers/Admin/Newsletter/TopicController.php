@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreNewsletterTopicRequest;
 use App\Models\NewsLetterTopic;
 use Dedoc\Scramble\Attributes\Group;
+use Illuminate\Support\Facades\Gate;
 
 #[Group('Admin Newsletter Topic Management')]
 class TopicController extends Controller
@@ -15,6 +16,8 @@ class TopicController extends Controller
      */
     public function index()
     {
+        Gate::authorize('read:newsletter-topic');
+
         return NewsLetterTopic::get();
     }
 
@@ -23,6 +26,8 @@ class TopicController extends Controller
      */
     public function store(StoreNewsletterTopicRequest $request)
     {
+        Gate::authorize('create:newsletter-topic');
+
         $validated = $request->validated();
         $topic = NewsLetterTopic::create($validated);
 
@@ -40,6 +45,8 @@ class TopicController extends Controller
      */
     public function show(NewsLetterTopic $topic)
     {
+        Gate::authorize('read:newsletter-topic');
+
         return $topic;
     }
 
@@ -48,6 +55,8 @@ class TopicController extends Controller
      */
     public function update(StoreNewsletterTopicRequest $request, NewsLetterTopic $topic)
     {
+        Gate::authorize('update:newsletter-topic');
+
         $validated = $request->validated();
         $topic->update($validated);
 
@@ -59,6 +68,8 @@ class TopicController extends Controller
      */
     public function destroy(NewsLetterTopic $topic)
     {
+        Gate::authorize('delete:newsletter-topic');
+
         $topic->delete();
 
         return response()->noContent();

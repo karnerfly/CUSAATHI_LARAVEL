@@ -7,7 +7,7 @@ use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class UpdateNewsletterSubscriberRequest extends FormRequest
+class StoreNewsletterSubscriberRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -28,16 +28,15 @@ class UpdateNewsletterSubscriberRequest extends FormRequest
 
         return [
             'email' => [
-                'sometimes',
                 'required',
                 'email',
                 'max:255',
                 Rule::unique('newsletter_subscribers', 'email')->ignore($subscriber_id),
             ],
-            'frequency' => ['sometimes', 'required', 'string', Rule::enum(NewsLetterFrequency::class)],
-            'active' => ['sometimes', 'required', 'boolean'],
-            'verified' => ['sometimes', 'required', 'boolean'],
-            'topic_ids' => ['sometimes', 'array'],
+            'frequency' => ['required', 'string', Rule::enum(NewsLetterFrequency::class)],
+            'active' => ['required', 'boolean'],
+            'verified' => ['required', 'boolean'],
+            'topic_ids' => ['nullable', 'array', 'min:1'],
             'topic_ids.*' => ['integer', 'distinct', 'exists:newsletter_topics,id'],
         ];
     }

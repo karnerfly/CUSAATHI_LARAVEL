@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Newsletter;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Newsletter\UpdateNewsletterPreferenceRequest;
+use App\Http\Requests\Newsletter\StoreNewsletterPreferenceRequest;
 use App\Models\NewsletterSubscriber;
+use Dedoc\Scramble\Attributes\Group;
 
+#[Group('Newsletter')]
 class NewsletterPreferenceController extends Controller
 {
     /**
@@ -23,13 +25,11 @@ class NewsletterPreferenceController extends Controller
     /**
      * Update preferences of specified subscriber.
      */
-    public function update(UpdateNewsletterPreferenceRequest $request, NewsletterSubscriber $subscriber)
+    public function update(StoreNewsletterPreferenceRequest $request, NewsletterSubscriber $subscriber)
     {
-        if ($request->filled('frequency')) {
-            $subscriber->update([
-                'frequency' => $request->frequency,
-            ]);
-        }
+        $subscriber->update([
+            'frequency' => $request->input('frequency'),
+        ]);
 
         if ($request->has('topic_ids')) {
             $subscriber->topics()->sync($request->topic_ids ?? []);

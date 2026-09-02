@@ -6,8 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Newsletter\NewsletterSubscribeRequest;
 use App\Models\NewsletterSubscriber;
 use App\Models\NewsLetterTopic;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Support\Str;
 
+#[Group('Newsletter')]
 class NewsLetterSubscriptionController extends Controller
 {
     /**

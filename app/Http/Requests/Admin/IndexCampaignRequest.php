@@ -2,12 +2,10 @@
 
 namespace App\Http\Requests\Admin;
 
-use App\Enums\NewsLetterFrequency;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
-class IndexNewsletterSubscribersRequest extends FormRequest
+class IndexCampaignRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,11 +23,8 @@ class IndexNewsletterSubscribersRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => ['sometimes', 'string', 'max:255'],
-            'user_id' => ['sometimes', 'integer'],
-            'active' => ['sometimes', 'boolean'],
-            'frequency' => ['sometimes', 'string', Rule::enum(NewsLetterFrequency::class)],
-            'verified' => ['sometimes', 'boolean'],
+            'status' => ['sometimes', 'string', 'in:sent,scheduled,draft'],
+            'topic_id' => ['sometimes', 'integer', 'exists:newsletter_topics,id'],
             'per_page' => ['sometimes', 'integer', 'min:1', 'max:100'],
             'page' => ['sometimes', 'integer', 'min:1'],
         ];

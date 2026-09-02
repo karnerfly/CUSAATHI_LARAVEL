@@ -4,12 +4,13 @@ namespace App\Http\Controllers\Admin\Newsletter;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\IndexNewsletterSubscribersRequest;
-use App\Http\Requests\Admin\UpdateNewsletterSubscriberRequest;
+use App\Http\Requests\Admin\StoreNewsletterSubscriberRequest;
 use App\Http\Resources\Admin\NewsletterSubscriberDetailResource;
 use App\Http\Resources\Admin\NewsletterSubscriberResource;
 use App\Models\NewsletterSubscriber;
 use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 
 #[Group('Admin Newsletter Subs Management')]
 class SubscriberController extends Controller
@@ -19,6 +20,8 @@ class SubscriberController extends Controller
      */
     public function index(IndexNewsletterSubscribersRequest $request)
     {
+        Gate::authorize('read:newsletter-subscriber');
+
         $query = NewsletterSubscriber::query()->select([
             'id',
             'user_id',
@@ -59,6 +62,8 @@ class SubscriberController extends Controller
      */
     public function show(NewsletterSubscriber $subscriber)
     {
+        Gate::authorize('read:newsletter-subscriber');
+
         $subscriber->load(['user', 'topics']);
         return new NewsletterSubscriberDetailResource($subscriber);
     }
@@ -66,30 +71,18 @@ class SubscriberController extends Controller
     /**
      * Update the specified subscriber in storage.
      */
-    public function update(UpdateNewsletterSubscriberRequest $request, NewsletterSubscriber $subscriber)
+    public function update(StoreNewsletterSubscriberRequest $request, NewsletterSubscriber $subscriber)
     {
+        Gate::authorize('update:newsletter-subscriber');
+
         DB::transaction(function () use ($subscriber, $request) {
-            $attributes = [];
-
-            if ($request->filled('email')) {
-                $attributes['email'] = $request->email;
-            }
-
-            if ($request->filled('frequency')) {
-                $attributes['frequency'] = $request->frequency;
-            }
-
-            if ($request->has('active')) {
-                $attributes['active'] = $request->boolean('active');
-            }
+            $validated = $request->only(['email', 'frequency', 'active']);
 
             if ($request->has('verified')) {
-                $attributes['verified_at'] = $request->boolean('verified') ? $subscriber->verified_at ?? now() : null;
+                $validated['verified_at'] = $request->boolean('verified') ? $subscriber->verified_at ?? now() : null;
             }
 
-            if (!empty($attributes)) {
-                $subscriber->update($attributes);
-            }
+            $subscriber->update($validated);
 
             if ($request->has('topic_ids')) {
                 $subscriber->topics()->sync($request->topic_ids ?? []);
@@ -104,6 +97,8 @@ class SubscriberController extends Controller
      */
     public function destroy(NewsletterSubscriber $subscriber)
     {
+        Gate::authorize('delete:newsletter-subscriber');
+
         $subscriber->delete();
 
         return response()->noContent();

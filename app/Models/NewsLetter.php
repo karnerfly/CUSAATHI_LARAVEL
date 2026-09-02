@@ -35,6 +35,6 @@ class NewsLetter extends Model
 
     public function logs(): HasMany
     {
-        return $this->hasMany(NewsletterLog::class);
+        return $this->hasMany(NewsletterLog::class, 'newsletter_id');
     }
 }

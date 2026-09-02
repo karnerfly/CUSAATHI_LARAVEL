@@ -16,7 +16,9 @@ Route::post('unsubscribe/{subscriber:unsubscribe_token}', [
 ])->name('api.newsletter.unsubscribe');
 
 Route::get('preferences/{subscriber:unsubscribe_token}', [NewsletterPreferenceController::class, 'show']);
-Route::patch('preferences/{subscriber:unsubscribe_token}', [NewsletterPreferenceController::class, 'update']);
+Route::put('preferences/{subscriber:unsubscribe_token}', [NewsletterPreferenceController::class, 'update']);
 
-Route::post('track/click', [NewsletterTrackingController::class, 'trackClick']);
-Route::get('track/open/{log_id}', [NewsletterTrackingController::class, 'trackOpen']);
+// Route::post('track/click', [NewsletterTrackingController::class, 'trackClick']);
+Route::get('track/open/{log_id}', [NewsletterTrackingController::class, 'track_open'])->name(
+    'api.newsletter.track-open',
+);

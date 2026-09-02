@@ -7,7 +7,7 @@ use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class UpdateNewsletterPreferenceRequest extends FormRequest
+class StoreNewsletterPreferenceRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,7 +25,7 @@ class UpdateNewsletterPreferenceRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'frequency' => ['sometimes', 'string', Rule::enum(NewsLetterFrequency::class)],
+            'frequency' => ['required', 'string', Rule::enum(NewsLetterFrequency::class)],
             'topic_ids' => ['nullable', 'array', 'min:1'],
             'topic_ids.*' => ['integer', 'distinct', 'exists:newsletter_topics,id'],
         ];

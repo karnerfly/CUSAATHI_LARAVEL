@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\ContactMessageController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ManagementController;
+use App\Http\Controllers\Admin\Newsletter\CampaignController;
 use App\Http\Controllers\Admin\Newsletter\SubscriberController;
 use App\Http\Controllers\Admin\Newsletter\TopicController;
 use App\Http\Controllers\Admin\PermissionController;
@@ -84,10 +85,12 @@ Route::prefix('newsletter')
     ->middleware(['auth:sanctum', 'session.revoked', 'ensure.admin'])
     ->group(function () {
         Route::apiResource('topics', TopicController::class);
+        Route::apiResource('subscribers', SubscriberController::class);
+        Route::apiResource('campaigns', CampaignController::class);
 
-        Route::get('subscribers', [SubscriberController::class, 'index']);
-        Route::get('subscribers/{subscriber}', [SubscriberController::class, 'show']);
-        Route::patch('subscribers/{subscriber}', [SubscriberController::class, 'update']);
-        Route::delete('subscribers/{subscriber}', [SubscriberController::class, 'destroy']);
-    })
-    ->can('manage:newsletter');
+        Route::post('campaigns/{campaign}/dispatch', [CampaignController::class, 'dispatch'])->can(
+            'dispatch:newsletter',
+        );
+
+        Route::get('campaigns/{campaign}/analytics', [CampaignController::class, 'analytics'])->can('read:newsletter');
+    });
