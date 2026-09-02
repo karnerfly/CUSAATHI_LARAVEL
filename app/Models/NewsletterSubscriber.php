@@ -12,6 +12,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
+use OwenIt\Auditing\Auditable as AuditableTrait;
+use OwenIt\Auditing\Contracts\Auditable;
 
 /**
  * @property int $id
@@ -25,8 +27,10 @@ use Illuminate\Support\Str;
  * @property Carbon|null $updated_at
  */
 #[Fillable(['user_id', 'email', 'active', 'verified_at', 'verification_token', 'unsubscribe_token'])]
-class NewsletterSubscriber extends Model
+class NewsletterSubscriber extends Model implements Auditable
 {
+    use AuditableTrait;
+
     protected $casts = [
         'verified_at' => 'datetime',
         'active' => 'boolean',

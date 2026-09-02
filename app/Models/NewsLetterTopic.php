@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use OwenIt\Auditing\Auditable as AuditableTrait;
+use OwenIt\Auditing\Contracts\Auditable;
 
 /**
  * @property int $id
@@ -16,8 +18,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property Carbon|null $updated_at
  */
 #[Fillable(['name', 'slug'])]
-class NewsletterTopic extends Model
+class NewsletterTopic extends Model implements Auditable
 {
+    use AuditableTrait;
+
     public function subscribers(): BelongsToMany
     {
         return $this->belongsToMany(

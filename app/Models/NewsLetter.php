@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
+use OwenIt\Auditing\Auditable as AuditableTrait;
+use OwenIt\Auditing\Contracts\Auditable;
 
 /**
  * @property int $id
@@ -19,8 +21,10 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $updated_at
  */
 #[Fillable(['subject', 'topic_id', 'content', 'scheduled_for', 'sent_at'])]
-class Newsletter extends Model
+class Newsletter extends Model implements Auditable
 {
+    use AuditableTrait;
+
     protected $casts = [
         'scheduled_for' => 'datetime',
         'sent_at' => 'datetime',
