@@ -127,11 +127,8 @@ class CampaignController extends Controller
             );
         }
 
-        $campaign->update([
-            'sent_at' => now(),
-        ]);
-
         NewsletterCampaignJob::dispatch($campaign);
+        $campaign->update(['sent_at' => now()]);
 
         return response()->noContent();
     }
