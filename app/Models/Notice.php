@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Models\College;
+namespace App\Models;
 
+use App\Models\College\College;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
@@ -37,8 +38,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Notice extends Model
 {
     use SoftDeletes;
-
-    protected $table = 'college.notices';
 
     /**
      * @return array<string, string>

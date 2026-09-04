@@ -21,19 +21,19 @@ class SubscriberController extends Controller
     {
         $query = Subscriber::query()->select(['id', 'user_id', 'active', 'email', 'verified_at', 'created_at']);
 
-        $query->when($request->filled('email'), function ($query) use ($request) {
+        $query->when($request->has('email'), function ($query) use ($request) {
             $query->where('email', 'ilike', '%' . $request->email . '%');
         });
 
-        $query->when($request->filled('user_id'), function ($query) use ($request) {
+        $query->when($request->has('user_id'), function ($query) use ($request) {
             $query->where('user_id', $request->user_id);
         });
 
-        $query->when($request->filled('active'), function ($query) use ($request) {
+        $query->when($request->has('active'), function ($query) use ($request) {
             $query->where('active', $request->boolean('active'));
         });
 
-        $query->when($request->filled('verified'), function ($query) use ($request) {
+        $query->when($request->has('verified'), function ($query) use ($request) {
             $request->boolean('verified') ? $query->whereNotNull('verified_at') : $query->whereNull('verified_at');
         });
 

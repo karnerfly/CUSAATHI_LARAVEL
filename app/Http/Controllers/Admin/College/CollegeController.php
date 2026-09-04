@@ -34,21 +34,24 @@ class CollegeController extends Controller
             'updated_at',
         ]);
 
-        $query->when($request->input('deleted'), fn($query) => $query->withTrashed());
-        $query->when($request->filled('name'), fn($query) => $query->where('name', 'like', "%{$request->name}%"));
-        $query->when($request->filled('type'), fn($query) => $query->where('type', $request->type));
+        $query->when(
+            $request->has('deleted'),
+            fn($query) => $request->boolean('deleted') ? $query->onlyTrashed() : $query->whereNull('deleted_at'),
+        );
+        $query->when($request->has('name'), fn($query) => $query->where('name', 'like', "%{$request->name}%"));
+        $query->when($request->has('type'), fn($query) => $query->where('type', $request->type));
 
         $query->when(
-            $request->filled('established_year'),
+            $request->has('established_year'),
             fn($query) => $query->where('established_year', $request->established_year),
         );
 
         $query->when(
-            $request->filled('accreditation_grade'),
+            $request->has('accreditation_grade'),
             fn($query) => $query->where('accreditation_grade', $request->accreditation_grade),
         );
 
-        $query->orderBy($request->string('sort', 'created_at'), $request->string('order', 'desc'));
+        $query->orderBy('created_at', $request->string('order', 'desc'));
         $colleges = $query->paginate($request->integer('per_page', 25))->withQueryString();
 
         return CollegeResource::collection($colleges);

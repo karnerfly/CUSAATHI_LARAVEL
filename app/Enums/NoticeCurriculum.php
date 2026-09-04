@@ -2,7 +2,7 @@
 
 namespace App\Enums;
 
-enum CollegeNoticeCurriculum: string
+enum NoticeCurriculum: string
 {
     case CCF = 'ccf';
     case CBCS = 'cbcs';

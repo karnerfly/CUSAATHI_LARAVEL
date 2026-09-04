@@ -6,7 +6,7 @@ use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\College\CollegeController;
 use App\Http\Controllers\Admin\College\CollegeImageController;
 use App\Http\Controllers\Admin\College\CollegeLocationController;
-use App\Http\Controllers\Admin\College\CollegeNoticeController;
+use App\Http\Controllers\Admin\NoticeController;
 use App\Http\Controllers\Admin\ContactMessageController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\Newsletter\CampaignController;
@@ -116,6 +116,18 @@ Route::prefix('newsletter')
         );
     });
 
+Route::controller(NoticeController::class)
+    ->prefix('notices')
+    ->middleware(['auth:sanctum', 'session.revoked', 'ensure.admin'])
+    ->group(function () {
+        Route::get('', 'index');
+        Route::post('', 'store');
+        Route::get('{notice}', 'show');
+        Route::put('{notice}', 'update');
+        Route::delete('{notice}', 'destroy');
+        Route::post('{notice}/restore', 'restore')->withTrashed();
+    });
+
 Route::prefix('colleges')
     ->middleware(['auth:sanctum', 'session.revoked', 'ensure.admin'])
     ->group(function () {
@@ -136,11 +148,4 @@ Route::prefix('colleges')
 
         Route::get('locations/{location}', [CollegeLocationController::class, 'show']);
         Route::put('locations/{location}', [CollegeLocationController::class, 'update']);
-
-        Route::get('notices', [CollegeNoticeController::class, 'index']);
-        Route::post('notices', [CollegeNoticeController::class, 'store']);
-        Route::get('notices/{notice}', [CollegeNoticeController::class, 'show']);
-        Route::put('notices/{notice}', [CollegeNoticeController::class, 'update']);
-        Route::delete('notices/{notice}', [CollegeNoticeController::class, 'destroy']);
-        Route::post('notices/{notice}/restore', [CollegeNoticeController::class, 'restore'])->withTrashed();
     });

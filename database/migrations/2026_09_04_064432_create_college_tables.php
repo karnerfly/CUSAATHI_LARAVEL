@@ -29,7 +29,7 @@ return new class extends Migration {
             $table->softDeletes();
         });
 
-        Schema::create('college.notices', function (Blueprint $table) {
+        Schema::create('notices', function (Blueprint $table) {
             $table->id();
             $table->foreignId('college_id')->nullable()->constrained('college.colleges')->cascadeOnDelete();
             $table->string('title', 200);

@@ -2,7 +2,7 @@
 
 namespace App\Enums;
 
-enum CollegeNoticeCategory: string
+enum NoticeCategory: string
 {
     case EXAM = 'exam';
     case RESULT = 'result';
