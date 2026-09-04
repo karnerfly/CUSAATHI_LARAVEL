@@ -1,10 +1,14 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\AuditController;
 use App\Http\Controllers\Admin\AuthController;
+use App\Http\Controllers\Admin\College\CollegeController;
+use App\Http\Controllers\Admin\College\CollegeImageController;
+use App\Http\Controllers\Admin\College\CollegeLocationController;
+use App\Http\Controllers\Admin\College\CollegeNoticeController;
 use App\Http\Controllers\Admin\ContactMessageController;
 use App\Http\Controllers\Admin\DashboardController;
-use App\Http\Controllers\Admin\ManagementController;
 use App\Http\Controllers\Admin\Newsletter\CampaignController;
 use App\Http\Controllers\Admin\Newsletter\SubscriberController;
 use App\Http\Controllers\Admin\Newsletter\TopicController;
@@ -46,7 +50,7 @@ Route::controller(PermissionController::class)
         Route::delete('{admin}/permissions/{permission}', 'revoke')->can('revoke:permission');
     });
 
-Route::controller(ManagementController::class)
+Route::controller(AdminController::class)
     ->middleware(['auth:sanctum', 'session.revoked', 'ensure.admin'])
     ->group(function () {
         Route::get('', 'get_all_admins')->can('read:admin');
@@ -84,12 +88,59 @@ Route::controller(ContactMessageController::class)
 Route::prefix('newsletter')
     ->middleware(['auth:sanctum', 'session.revoked', 'ensure.admin'])
     ->group(function () {
-        Route::apiResource('topics', TopicController::class);
-        Route::apiResource('subscribers', SubscriberController::class);
-        Route::apiResource('campaigns', CampaignController::class);
+        Route::get('topics', [TopicController::class, 'index'])->can('read:newsletter-topic');
+        Route::post('topics', [TopicController::class, 'store'])->can('create:newsletter-topic');
+        Route::get('topics/{topic}', [TopicController::class, 'show'])->can('read:newsletter-topic');
+        Route::put('topics/{topic}', [TopicController::class, 'update'])->can('update:newsletter-topic');
+        Route::delete('topics/{topic}', [TopicController::class, 'destroy'])->can('delete:newsletter-topic');
 
+        Route::get('subscribers', [SubscriberController::class, 'index'])->can('read:newsletter-subscriber');
+        Route::get('subscribers/{subscriber}', [SubscriberController::class, 'show'])->can(
+            'read:newsletter-subscriber',
+        );
+        Route::put('subscribers/{subscriber}', [SubscriberController::class, 'update'])->can(
+            'update:newsletter-subscriber',
+        );
+        Route::delete('subscribers/{subscriber}', [SubscriberController::class, 'destroy'])->can(
+            'delete:newsletter-subscriber',
+        );
+
+        Route::get('campaigns', [CampaignController::class, 'index'])->can('read:newsletter');
+        Route::post('campaigns', [CampaignController::class, 'store'])->can('create:newsletter');
         Route::get('campaigns/{campaign}/analytics', [CampaignController::class, 'analytics'])->can('read:newsletter');
+        Route::get('campaigns/{campaign}', [CampaignController::class, 'show'])->can('read:newsletter');
+        Route::put('campaigns/{campaign}', [CampaignController::class, 'update'])->can('update:newsletter');
+        Route::delete('campaigns/{campaign}', [CampaignController::class, 'destroy'])->can('delete:newsletter');
         Route::post('campaigns/{campaign}/dispatch', [CampaignController::class, 'dispatch'])->can(
             'dispatch:newsletter',
         );
+    });
+
+Route::prefix('colleges')
+    ->middleware(['auth:sanctum', 'session.revoked', 'ensure.admin'])
+    ->group(function () {
+        Route::get('', [CollegeController::class, 'index']);
+        Route::post('', [CollegeController::class, 'store']);
+        Route::get('/{college}', [CollegeController::class, 'show']);
+        Route::put('{college}', [CollegeController::class, 'update']);
+        Route::post('{college}/verify', [CollegeController::class, 'verify']);
+        Route::post('{college}/unverify', [CollegeController::class, 'unverify']);
+        Route::post('{college}/images', [CollegeController::class, 'add_image_to_college']);
+        Route::post('{college}/locations', [CollegeController::class, 'add_location_to_college']);
+        Route::delete('{college}', [CollegeController::class, 'destroy']);
+        Route::post('{college}/restore', [CollegeController::class, 'restore'])->withTrashed();
+
+        Route::get('images/{image}', [CollegeImageController::class, 'show']);
+        Route::put('images/{image}', [CollegeImageController::class, 'update']);
+        Route::delete('images/{image}', [CollegeImageController::class, 'destroy']);
+
+        Route::get('locations/{location}', [CollegeLocationController::class, 'show']);
+        Route::put('locations/{location}', [CollegeLocationController::class, 'update']);
+
+        Route::get('notices', [CollegeNoticeController::class, 'index']);
+        Route::post('notices', [CollegeNoticeController::class, 'store']);
+        Route::get('notices/{notice}', [CollegeNoticeController::class, 'show']);
+        Route::put('notices/{notice}', [CollegeNoticeController::class, 'update']);
+        Route::delete('notices/{notice}', [CollegeNoticeController::class, 'destroy']);
+        Route::post('notices/{notice}/restore', [CollegeNoticeController::class, 'restore'])->withTrashed();
     });

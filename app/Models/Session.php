@@ -14,7 +14,7 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @property string|null $ip_address
  * @property string|null $user_agent
  * @property string $payload
- * @property boolean $revoked
+ * @property bool $revoked
  * @property int $last_activity
  */
 #[Fillable('id', 'user_id', 'ip_address', 'user_agent', 'payload', 'last_activity', 'revoked')]

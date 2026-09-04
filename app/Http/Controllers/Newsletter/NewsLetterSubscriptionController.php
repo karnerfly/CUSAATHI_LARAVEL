@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Newsletter;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Newsletter\NewsletterSubscribeRequest;
-use App\Models\NewsletterSubscriber;
-use App\Models\NewsletterTopic;
+use App\Models\Newsletter\Subscriber;
+use App\Models\Newsletter\Topic;
 use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Support\Str;
 
@@ -17,7 +17,7 @@ class NewsLetterSubscriptionController extends Controller
      */
     public function topics()
     {
-        return NewsletterTopic::get();
+        return Topic::get();
     }
 
     /**
@@ -27,7 +27,7 @@ class NewsLetterSubscriptionController extends Controller
     {
         $validated = $request->validated();
 
-        $subscriber = NewsletterSubscriber::firstOrNew(['email' => $validated['email']]);
+        $subscriber = Subscriber::firstOrNew(['email' => $validated['email']]);
 
         if ($subscriber->active && $subscriber->verified_at) {
             return response()->json(
@@ -63,7 +63,7 @@ class NewsLetterSubscriptionController extends Controller
      */
     public function verify(string $token)
     {
-        $subscriber = NewsletterSubscriber::where('verification_token', $token)->firstOrFail();
+        $subscriber = Subscriber::where('verification_token', $token)->firstOrFail();
 
         $subscriber->update([
             'verified_at' => now(),
@@ -77,7 +77,7 @@ class NewsLetterSubscriptionController extends Controller
     /**
      * Get subscription status of specified subscriber.
      */
-    public function subscription(NewsletterSubscriber $subscriber)
+    public function subscription(Subscriber $subscriber)
     {
         return response()->json([
             'email' => $subscriber->email,
@@ -89,7 +89,7 @@ class NewsLetterSubscriptionController extends Controller
     /**
      * Unsubscribe from newsletters.
      */
-    public function unsubscribe(NewsletterSubscriber $subscriber)
+    public function unsubscribe(Subscriber $subscriber)
     {
         $subscriber->update(['active' => false]);
 

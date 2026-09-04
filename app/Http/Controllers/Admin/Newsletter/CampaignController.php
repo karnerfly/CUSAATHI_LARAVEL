@@ -3,12 +3,11 @@
 namespace App\Http\Controllers\Admin\Newsletter;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\IndexCampaignRequest;
-use App\Http\Requests\Admin\StoreCampaignRequest;
+use App\Http\Requests\Admin\Newsletter\IndexNewsletterRequest;
+use App\Http\Requests\Admin\Newsletter\StoreNewsletterRequest;
 use App\Jobs\NewsletterCampaignJob;
-use App\Models\Newsletter;
+use App\Models\Newsletter\Newsletter;
 use Dedoc\Scramble\Attributes\Group;
-use Illuminate\Support\Facades\Gate;
 
 #[Group('Admin Newsletter Campaign Management')]
 class CampaignController extends Controller
@@ -16,10 +15,8 @@ class CampaignController extends Controller
     /**
      * Display a listing of the campaigns.
      */
-    public function index(IndexCampaignRequest $request)
+    public function index(IndexNewsletterRequest $request)
     {
-        Gate::authorize('read:newsletter');
-
         $query = Newsletter::with('topic:id,name,slug')->latest();
 
         if ($request->filled('status')) {
@@ -43,10 +40,8 @@ class CampaignController extends Controller
     /**
      * Store a newly created campaign in storage.
      */
-    public function store(StoreCampaignRequest $request)
+    public function store(StoreNewsletterRequest $request)
     {
-        Gate::authorize('create:newsletter');
-
         $campaign = Newsletter::create($request->validated());
         $campaign->refresh();
 
@@ -64,19 +59,16 @@ class CampaignController extends Controller
      */
     public function show(Newsletter $campaign)
     {
-        Gate::authorize('read:newsletter');
-
         $campaign->load('topic:id,name,slug');
+
         return $campaign;
     }
 
     /**
      * Update the specified campaign in storage.
      */
-    public function update(StoreCampaignRequest $request, Newsletter $campaign)
+    public function update(StoreNewsletterRequest $request, Newsletter $campaign)
     {
-        Gate::authorize('update:newsletter');
-
         if ($campaign->sent_at !== null) {
             return response()->json(
                 [
@@ -96,8 +88,6 @@ class CampaignController extends Controller
      */
     public function destroy(Newsletter $campaign)
     {
-        Gate::authorize('delete:newsletter');
-
         if ($campaign->sent_at !== null) {
             return response()->json(
                 [

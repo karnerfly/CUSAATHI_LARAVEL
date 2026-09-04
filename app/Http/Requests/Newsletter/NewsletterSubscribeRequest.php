@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Newsletter;
 
+use App\Models\Newsletter\Topic;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -26,7 +27,7 @@ class NewsletterSubscribeRequest extends FormRequest
         return [
             'email' => ['required', 'email', 'max:255'],
             'topic_ids' => ['sometimes', 'nullable', 'array', 'min:1'],
-            'topic_ids.*' => ['integer', 'distinct', 'exists:newsletter_topics,id'],
+            'topic_ids.*' => ['integer', 'distinct', Rule::exists(Topic::class, 'id')],
         ];
     }
 

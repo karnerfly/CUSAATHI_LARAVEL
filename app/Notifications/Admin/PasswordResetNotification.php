@@ -34,10 +34,10 @@ class PasswordResetNotification extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         $url =
-            rtrim(config('app.admin_url'), '/') .
-            '/reset-password?token=' .
-            urlencode($this->token) .
-            '&email=' .
+            rtrim(config('app.admin_url'), '/').
+            '/reset-password?token='.
+            urlencode($this->token).
+            '&email='.
             urlencode($notifiable->email);
 
         return new MailMessage()
@@ -55,7 +55,7 @@ class PasswordResetNotification extends Notification
     public function toArray(object $notifiable): array
     {
         return [
-                //
-            ];
+            //
+        ];
     }
 }

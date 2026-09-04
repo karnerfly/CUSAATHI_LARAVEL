@@ -3,11 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\ChangeNameReqest;
-use App\Http\Requests\Admin\ChangePasswordReqest;
-use App\Http\Requests\Admin\UploadProfilePictureReqest;
-use App\Http\Resources\Admin\AdminResource;
-use App\Http\Resources\SessionResource;
+use App\Http\Requests\Admin\Dashboard\ChangeNameReqest;
+use App\Http\Requests\Admin\Dashboard\ChangePasswordReqest;
+use App\Http\Requests\Admin\Dashboard\UploadProfilePictureReqest;
+use App\Http\Resources\Admin\Admin\AdminResource;
+use App\Http\Resources\Session\SessionResource;
 use App\Models\Admin;
 use App\Models\Session;
 use Dedoc\Scramble\Attributes\Group;

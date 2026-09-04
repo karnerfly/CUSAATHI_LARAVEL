@@ -3,11 +3,10 @@
 namespace App\Console\Commands;
 
 use App\Jobs\NewsletterCampaignJob;
-use App\Models\Newsletter;
+use App\Models\Newsletter\Newsletter;
 use Illuminate\Console\Attributes\Description;
 use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Log;
 
 #[Signature('app:campaign-scheduled-tasks')]
 #[Description('Process campaigns whose scheduled_for time has arrived')]

@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\AssignPermissionsRequest;
-use App\Http\Requests\Admin\StorePermissionRequest;
-use App\Http\Resources\Admin\PermissionResource;
+use App\Http\Requests\Admin\Permission\AssignPermissionsRequest;
+use App\Http\Requests\Admin\Permission\StorePermissionRequest;
+use App\Http\Resources\Admin\Permission\PermissionResource;
 use App\Models\Admin;
 use App\Models\Permission;
 use Dedoc\Scramble\Attributes\Group;
@@ -90,6 +90,7 @@ class PermissionController extends Controller
 
     /**
      * Get permissions of the specified admin.
+     *
      * @response PermissionResource[]
      */
     public function get_admin_permissions(Admin $admin)

@@ -3,9 +3,9 @@
 namespace App\Jobs;
 
 use App\Mail\NewsletterCampaignMail;
-use App\Models\Newsletter;
-use App\Models\NewsletterLog;
-use App\Models\NewsletterSubscriber;
+use App\Models\Newsletter\Log;
+use App\Models\Newsletter\Newsletter;
+use App\Models\Newsletter\Subscriber;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Foundation\Queue\Queueable;
@@ -32,7 +32,7 @@ class NewsletterCampaignJob implements ShouldQueue
      */
     public function handle(): void
     {
-        $subscriber_query = NewsletterSubscriber::active();
+        $subscriber_query = Subscriber::active();
 
         if ($this->campaign->topic_id) {
             $subscriber_query->whereHas('topics', function ($query) {
@@ -42,7 +42,7 @@ class NewsletterCampaignJob implements ShouldQueue
 
         $subscriber_query->chunkById(250, function ($subscribers) {
             foreach ($subscribers as $subscriber) {
-                $log = NewsletterLog::firstOrCreate(
+                $log = Log::firstOrCreate(
                     [
                         'newsletter_id' => $this->campaign->id,
                         'subscriber_id' => $subscriber->id,

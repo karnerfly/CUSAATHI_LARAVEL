@@ -3,14 +3,13 @@
 namespace App\Http\Controllers\Admin\Newsletter;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\IndexNewsletterSubscribersRequest;
-use App\Http\Requests\Admin\StoreNewsletterSubscriberRequest;
-use App\Http\Resources\Admin\NewsletterSubscriberDetailResource;
-use App\Http\Resources\Admin\NewsletterSubscriberResource;
-use App\Models\NewsletterSubscriber;
+use App\Http\Requests\Admin\Newsletter\IndexNewsletterSubscribersRequest;
+use App\Http\Requests\Admin\Newsletter\StoreNewsletterSubscriberRequest;
+use App\Http\Resources\Admin\Newsletter\NewsletterSubscriberDetailResource;
+use App\Http\Resources\Admin\Newsletter\NewsletterSubscriberResource;
+use App\Models\Newsletter\Subscriber;
 use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Gate;
 
 #[Group('Admin Newsletter Subs Management')]
 class SubscriberController extends Controller
@@ -20,16 +19,7 @@ class SubscriberController extends Controller
      */
     public function index(IndexNewsletterSubscribersRequest $request)
     {
-        Gate::authorize('read:newsletter-subscriber');
-
-        $query = NewsletterSubscriber::query()->select([
-            'id',
-            'user_id',
-            'active',
-            'email',
-            'verified_at',
-            'created_at',
-        ]);
+        $query = Subscriber::query()->select(['id', 'user_id', 'active', 'email', 'verified_at', 'created_at']);
 
         $query->when($request->filled('email'), function ($query) use ($request) {
             $query->where('email', 'ilike', '%' . $request->email . '%');
@@ -55,21 +45,18 @@ class SubscriberController extends Controller
     /**
      * Display the specified subscriber.
      */
-    public function show(NewsletterSubscriber $subscriber)
+    public function show(Subscriber $subscriber)
     {
-        Gate::authorize('read:newsletter-subscriber');
-
         $subscriber->load(['user', 'topics']);
+
         return new NewsletterSubscriberDetailResource($subscriber);
     }
 
     /**
      * Update the specified subscriber in storage.
      */
-    public function update(StoreNewsletterSubscriberRequest $request, NewsletterSubscriber $subscriber)
+    public function update(StoreNewsletterSubscriberRequest $request, Subscriber $subscriber)
     {
-        Gate::authorize('update:newsletter-subscriber');
-
         DB::transaction(function () use ($subscriber, $request) {
             $validated = $request->only(['email', 'active']);
 
@@ -90,10 +77,8 @@ class SubscriberController extends Controller
     /**
      * Remove the specified subscriber from storage.
      */
-    public function destroy(NewsletterSubscriber $subscriber)
+    public function destroy(Subscriber $subscriber)
     {
-        Gate::authorize('delete:newsletter-subscriber');
-
         $subscriber->delete();
 
         return response()->noContent();

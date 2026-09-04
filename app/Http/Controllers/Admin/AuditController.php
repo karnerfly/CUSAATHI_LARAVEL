@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\IndexAuditRequest;
+use App\Http\Requests\Admin\Audit\IndexAuditRequest;
 use App\Http\Resources\Audit\ActivityDetailResource;
 use App\Http\Resources\Audit\ActivityResource;
 use Dedoc\Scramble\Attributes\Group;

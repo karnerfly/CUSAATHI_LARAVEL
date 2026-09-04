@@ -19,8 +19,9 @@ class ActivityDetailResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $agent = new Agent();
+        $agent = new Agent;
         $agent->setUserAgent($this->user_agent);
+
         return [
             'id' => $this->id,
             'event' => $this->event,

@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Newsletter;
 
+use App\Models\Newsletter\Topic;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -25,7 +26,7 @@ class StoreNewsletterPreferenceRequest extends FormRequest
     {
         return [
             'topic_ids' => ['nullable', 'array', 'min:1'],
-            'topic_ids.*' => ['integer', 'distinct', 'exists:newsletter_topics,id'],
+            'topic_ids.*' => ['integer', 'distinct', Rule::exists(Topic::class, 'id')],
         ];
     }
 

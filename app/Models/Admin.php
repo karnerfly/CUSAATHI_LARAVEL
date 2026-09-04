@@ -23,7 +23,7 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @property string $email
  * @property string|null $profile_url
  * @property string $password
- * @property boolean $active
+ * @property bool $active
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property Carbon|null $deleted_at

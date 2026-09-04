@@ -23,8 +23,6 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @property ContactMessageStatus $status
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- *
- * @property-read User|null $user
  */
 #[Fillable(['user_id', 'name', 'email', 'phone', 'subject', 'message', 'status'])]
 class ContactMessage extends Model implements Auditable

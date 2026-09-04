@@ -2,9 +2,9 @@
 
 namespace App\Mail;
 
-use App\Models\Newsletter;
-use App\Models\NewsletterLog;
-use App\Models\NewsletterSubscriber;
+use App\Models\Newsletter\Log;
+use App\Models\Newsletter\Newsletter;
+use App\Models\Newsletter\Subscriber;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
@@ -21,11 +21,8 @@ class NewsletterCampaignMail extends Mailable implements ShouldQueue
     /**
      * Create a new message instance.
      */
-    public function __construct(
-        public Newsletter $campaign,
-        public NewsletterSubscriber $subscriber,
-        public NewsletterLog $log,
-    ) {
+    public function __construct(public Newsletter $campaign, public Subscriber $subscriber, public Log $log)
+    {
         //
     }
 

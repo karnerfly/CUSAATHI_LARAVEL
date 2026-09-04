@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\IndexContactMessageRequest;
-use App\Http\Requests\Admin\MarkAsContactMessageRequest;
+use App\Http\Requests\Admin\ContactMessage\IndexContactMessageRequest;
+use App\Http\Requests\Admin\ContactMessage\MarkAsContactMessageRequest;
 use App\Models\ContactMessage;
 use Dedoc\Scramble\Attributes\Group;
 
@@ -61,6 +61,7 @@ class ContactMessageController extends Controller
     public function destroy(ContactMessage $message)
     {
         $message->delete();
+
         return response()->noContent();
     }
 }

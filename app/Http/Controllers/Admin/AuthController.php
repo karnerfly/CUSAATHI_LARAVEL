@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\ForgotPasswordRequest;
-use App\Http\Requests\Admin\LoginRequest;
-use App\Http\Requests\Admin\ResetPasswordRequest;
-use App\Http\Resources\Admin\AdminResource;
+use App\Http\Requests\Admin\Auth\ForgotPasswordRequest;
+use App\Http\Requests\Admin\Auth\LoginRequest;
+use App\Http\Requests\Admin\Auth\ResetPasswordRequest;
+use App\Http\Resources\Admin\Admin\AdminResource;
 use App\Models\Admin;
 use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Auth\Events\PasswordReset;

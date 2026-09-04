@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Newsletter;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Newsletter\StoreNewsletterPreferenceRequest;
-use App\Models\NewsletterSubscriber;
+use App\Models\Newsletter\Subscriber;
 use Dedoc\Scramble\Attributes\Group;
 
 #[Group('Newsletter')]
@@ -13,7 +13,7 @@ class NewsletterPreferenceController extends Controller
     /**
      * Get preferences of specified subscriber.
      */
-    public function show(NewsletterSubscriber $subscriber)
+    public function show(Subscriber $subscriber)
     {
         return response()->json([
             'email' => $subscriber->email,
@@ -24,7 +24,7 @@ class NewsletterPreferenceController extends Controller
     /**
      * Update preferences of specified subscriber.
      */
-    public function update(StoreNewsletterPreferenceRequest $request, NewsletterSubscriber $subscriber)
+    public function update(StoreNewsletterPreferenceRequest $request, Subscriber $subscriber)
     {
         if ($request->has('topic_ids')) {
             $subscriber->topics()->sync($request->topic_ids ?? []);
