@@ -21,7 +21,6 @@ class ActivityResource extends JsonResource
         return [
             'id' => $this->id,
             'event' => $this->event,
-
             'actor' => $this->user
                 ? [
                     'id' => $this->user->id,
@@ -29,14 +28,12 @@ class ActivityResource extends JsonResource
                     'type' => class_basename($this->actor_type),
                 ]
                 : null,
-
             'resource' => $this->auditable
                 ? [
                     'id' => $this->auditable->id,
                     'type' => class_basename($this->auditable_type),
                 ]
                 : null,
-
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

@@ -38,7 +38,7 @@ class StoreCollegeRequest extends FormRequest
                 Rule::unique(College::class, 'slug')->ignore($cid),
             ],
             'type' => ['required', 'string', Rule::enum(CollegeType::class)],
-            'thumbnail_url' => ['nullable', 'string', 'url'],
+            // 'thumbnail_url' => ['nullable', 'string', 'url'],
             'website_url' => ['required', 'string', 'url'],
             'established_year' => ['required', 'integer', 'digits:4', 'min:1800'],
             'accreditation_body' => ['required', 'string', 'uppercase'],

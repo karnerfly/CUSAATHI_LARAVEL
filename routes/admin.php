@@ -6,6 +6,10 @@ use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\College\CollegeController;
 use App\Http\Controllers\Admin\College\CollegeImageController;
 use App\Http\Controllers\Admin\College\CollegeLocationController;
+use App\Http\Controllers\Admin\College\CourseController;
+use App\Http\Controllers\Admin\College\CourseTypeController;
+use App\Http\Controllers\Admin\College\FacilityController;
+use App\Http\Controllers\Admin\College\StreamController;
 use App\Http\Controllers\Admin\NoticeController;
 use App\Http\Controllers\Admin\ContactMessageController;
 use App\Http\Controllers\Admin\DashboardController;
@@ -131,16 +135,29 @@ Route::controller(NoticeController::class)
 Route::prefix('colleges')
     ->middleware(['auth:sanctum', 'session.revoked', 'ensure.admin'])
     ->group(function () {
-        Route::get('', [CollegeController::class, 'index']);
-        Route::post('', [CollegeController::class, 'store']);
-        Route::get('/{college}', [CollegeController::class, 'show']);
-        Route::put('{college}', [CollegeController::class, 'update']);
-        Route::post('{college}/verify', [CollegeController::class, 'verify']);
-        Route::post('{college}/unverify', [CollegeController::class, 'unverify']);
-        Route::post('{college}/images', [CollegeController::class, 'add_image_to_college']);
-        Route::post('{college}/locations', [CollegeController::class, 'add_location_to_college']);
-        Route::delete('{college}', [CollegeController::class, 'destroy']);
-        Route::post('{college}/restore', [CollegeController::class, 'restore'])->withTrashed();
+        Route::get('course-types', [CourseTypeController::class, 'index']);
+        Route::post('course-types', [CourseTypeController::class, 'store']);
+        Route::get('course-types/{type}', [CourseTypeController::class, 'show']);
+        Route::put('course-types/{type}', [CourseTypeController::class, 'update']);
+        Route::delete('course-types/{type}', [CourseTypeController::class, 'destroy']);
+
+        Route::get('courses', [CourseController::class, 'index']);
+        Route::post('courses', [CourseController::class, 'store']);
+        Route::get('courses/{course}', [CourseController::class, 'show']);
+        Route::put('courses/{course}', [CourseController::class, 'update']);
+        Route::delete('courses/{course}', [CourseController::class, 'destroy']);
+
+        Route::get('streams', [StreamController::class, 'index']);
+        Route::post('streams', [StreamController::class, 'store']);
+        Route::get('streams/{stream}', [StreamController::class, 'show']);
+        Route::put('streams/{stream}', [StreamController::class, 'update']);
+        Route::delete('streams/{stream}', [StreamController::class, 'destroy']);
+
+        Route::get('facilities', [FacilityController::class, 'index']);
+        Route::post('facilities', [FacilityController::class, 'store']);
+        Route::get('facilities/{facility}', [FacilityController::class, 'show']);
+        Route::put('facilities/{facility}', [FacilityController::class, 'update']);
+        Route::delete('facilities/{facility}', [FacilityController::class, 'destroy']);
 
         Route::get('images/{image}', [CollegeImageController::class, 'show']);
         Route::put('images/{image}', [CollegeImageController::class, 'update']);
@@ -148,4 +165,18 @@ Route::prefix('colleges')
 
         Route::get('locations/{location}', [CollegeLocationController::class, 'show']);
         Route::put('locations/{location}', [CollegeLocationController::class, 'update']);
+
+        Route::get('', [CollegeController::class, 'index']);
+        Route::post('', [CollegeController::class, 'store']);
+        Route::get('{college}', [CollegeController::class, 'show']);
+        Route::put('{college}', [CollegeController::class, 'update']);
+        Route::delete('{college}', [CollegeController::class, 'destroy']);
+        Route::post('{college}/restore', [CollegeController::class, 'restore'])->withTrashed();
+
+        Route::post('{college}/verify', [CollegeController::class, 'verify']);
+        Route::post('{college}/unverify', [CollegeController::class, 'unverify']);
+        Route::post('{college}/images', [CollegeController::class, 'add_image_to_college']);
+        Route::post('{college}/locations', [CollegeController::class, 'add_location_to_college']);
+        Route::post('{college}/facilities', [CollegeController::class, 'add_facility_to_college']);
+        Route::delete('{college}/facilities', [CollegeController::class, 'remove_facility_from_college']);
     });

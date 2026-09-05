@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin\College;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\College\IndexCollegeRequest;
+use App\Http\Requests\Admin\College\StoreCollegeFacilityRequest;
 use App\Http\Requests\Admin\College\StoreCollegeImageRequest;
 use App\Http\Requests\Admin\College\StoreCollegeLocationRequest;
 use App\Http\Requests\Admin\College\StoreCollegeRequest;
@@ -79,7 +80,7 @@ class CollegeController extends Controller
      */
     public function show(College $college)
     {
-        $college->load(['location', 'images']);
+        $college->load(['location', 'images', 'facilities']);
         return CollegeDetailResource::make($college);
     }
 
@@ -150,7 +151,7 @@ class CollegeController extends Controller
      */
     public function add_location_to_college(StoreCollegeLocationRequest $request, College $college)
     {
-        if ($college->location()) {
+        if ($college->location()->exists()) {
             return response()->json(
                 [
                     'message' => 'Address already exists for this college. Please update the existing address instead.',
@@ -161,6 +162,46 @@ class CollegeController extends Controller
 
         $validated = $request->validated();
         $college->location()->create($validated);
+
+        return response()->noContent();
+    }
+
+    /**
+     * Add the given facility to the specified college.
+     */
+    public function add_facility_to_college(StoreCollegeFacilityRequest $request, College $college)
+    {
+        $facility_id = $request->input('facility_id');
+        if ($college->facilities()->where('facility_id', $facility_id)->exists()) {
+            return response()->json(
+                [
+                    'message' => 'Facility already exists for this college.',
+                ],
+                409,
+            );
+        }
+
+        $college->facilities()->attach($facility_id);
+
+        return response()->noContent();
+    }
+
+    /**
+     * Remove the given facility to the specified college.
+     */
+    public function remove_facility_from_college(StoreCollegeFacilityRequest $request, College $college)
+    {
+        $facility_id = $request->input('facility_id');
+        if (!$college->facilities()->where('facility_id', $facility_id)->exists()) {
+            return response()->json(
+                [
+                    'message' => 'Facility does not belong to this college.',
+                ],
+                422,
+            );
+        }
+
+        $college->facilities()->detach($facility_id);
 
         return response()->noContent();
     }

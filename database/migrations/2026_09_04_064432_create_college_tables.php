@@ -64,6 +64,45 @@ return new class extends Migration {
             $table->string('alt_text', 100);
             $table->timestamp('created_at')->nullable();
         });
+
+        Schema::create('college.course_types', function (Blueprint $table) {
+            $table->id();
+            $table->string('label', 20);
+            $table->string('slug', 20);
+        });
+
+        Schema::create('college.courses', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('course_type_id')->constrained('college.course_types')->cascadeOnDelete();
+            $table->string('name', 100);
+            $table->string('code', 20);
+        });
+
+        Schema::create('college.streams', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('course_id')->constrained('college.courses')->cascadeOnDelete();
+            $table->string('name', 100);
+            $table->string('slug', 100);
+        });
+
+        Schema::create('college.college_stream', function (Blueprint $table) {
+            $table->foreignId('college_id')->constrained('college.colleges')->cascadeOnDelete();
+            $table->foreignId('stream_id')->constrained('college.streams')->cascadeOnDelete();
+            $table->string('eligibility');
+            $table->integer('duration');
+        });
+
+        Schema::create('college.facilities', function (Blueprint $table) {
+            $table->id();
+            $table->string('type', 100);
+            $table->string('label', 100);
+            $table->text('note');
+        });
+
+        Schema::create('college.college_facility', function (Blueprint $table) {
+            $table->foreignId('college_id')->constrained('college.colleges')->cascadeOnDelete();
+            $table->foreignId('facility_id')->constrained('college.facilities')->cascadeOnDelete();
+        });
     }
 
     /**
@@ -74,5 +113,11 @@ return new class extends Migration {
         Schema::dropIfExists('college.colleges');
         Schema::dropIfExists('college.notices');
         Schema::dropIfExists('college.locations');
+        Schema::dropIfExists('college.images');
+        Schema::dropIfExists('college.course_types');
+        Schema::dropIfExists('college.courses');
+        Schema::dropIfExists('college.streams');
+        Schema::dropIfExists('college.facilities');
+        Schema::dropIfExists('college.college_facility');
     }
 };

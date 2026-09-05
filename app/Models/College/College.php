@@ -2,9 +2,11 @@
 
 namespace App\Models\College;
 
+use App\Models\Notice;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -42,6 +44,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
         'accreditation_year',
         'accreditation_value',
         'contact_details',
+        'verified_at',
     ),
 ]
 class College extends Model
@@ -67,5 +70,15 @@ class College extends Model
     public function images(): HasMany
     {
         return $this->hasMany(Image::class);
+    }
+
+    public function streams(): BelongsToMany
+    {
+        return $this->belongsToMany(Stream::class)->withPivot(['eligibility', 'duration']);
+    }
+
+    public function facilities(): BelongsToMany
+    {
+        return $this->belongsToMany(Facility::class);
     }
 }

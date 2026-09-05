@@ -28,7 +28,6 @@ class NewsletterSubscriberDetailResource extends JsonResource
             'unsubscribe_token' => $this->unsubscribe_token,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
-
             'user' => $this->when(
                 $this->relationLoaded('user'),
                 fn() => $this->user
@@ -38,7 +37,6 @@ class NewsletterSubscriberDetailResource extends JsonResource
                     ]
                     : null,
             ),
-
             'topic_ids' => $this->when($this->relationLoaded('topics'), fn() => $this->topics->pluck('id')->values()),
         ];
     }
