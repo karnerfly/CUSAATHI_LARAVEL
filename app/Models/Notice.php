@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use OwenIt\Auditing\Auditable as AuditableTrait;
+use OwenIt\Auditing\Contracts\Auditable;
 
 /**
  * @property int $id
@@ -35,9 +37,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
         'published_date',
     ]),
 ]
-class Notice extends Model
+class Notice extends Model implements Auditable
 {
-    use SoftDeletes;
+    use AuditableTrait, SoftDeletes;
 
     /**
      * @return array<string, string>

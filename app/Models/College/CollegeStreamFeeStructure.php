@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
+use OwenIt\Auditing\Auditable as AuditableTrait;
+use OwenIt\Auditing\Contracts\Auditable;
 
 /**
  * @property int $id
@@ -16,8 +18,10 @@ use Illuminate\Support\Carbon;
  * @property Carbon $verified_at
  */
 #[Fillable(['fee_year', 'admission_fee', 'total_fee', 'verified_at'])]
-class CollegeStreamFeeStructure extends Model
+class CollegeStreamFeeStructure extends Model implements Auditable
 {
+    use AuditableTrait;
+
     protected $table = 'college.college_stream_fee_structures';
 
     public $timestamps = false;

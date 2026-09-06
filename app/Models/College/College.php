@@ -10,6 +10,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use OwenIt\Auditing\Auditable as AuditableTrait;
+use OwenIt\Auditing\Contracts\Auditable;
 
 /**
  * @property int $id
@@ -47,9 +49,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
         'verified_at',
     ]),
 ]
-class College extends Model
+class College extends Model implements Auditable
 {
-    use SoftDeletes;
+    use AuditableTrait, SoftDeletes;
 
     protected $table = 'college.colleges';
 

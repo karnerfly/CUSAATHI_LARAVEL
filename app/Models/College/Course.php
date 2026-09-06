@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use OwenIt\Auditing\Auditable as AuditableTrait;
+use OwenIt\Auditing\Contracts\Auditable;
 
 /**
  * @property int $id
@@ -14,8 +16,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string $code
  */
 #[Fillable(['course_type_id', 'name', 'code'])]
-class Course extends Model
+class Course extends Model implements Auditable
 {
+    use AuditableTrait;
+
     protected $table = 'college.courses';
 
     public $timestamps = false;

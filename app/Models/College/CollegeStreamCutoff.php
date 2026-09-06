@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
+use OwenIt\Auditing\Auditable as AuditableTrait;
+use OwenIt\Auditing\Contracts\Auditable;
 
 /**
  * @property int $id
@@ -15,8 +17,10 @@ use Illuminate\Support\Carbon;
  * @property Carbon $published_at
  */
 #[Fillable(['category', 'marks', 'published_at'])]
-class CollegeStreamCutoff extends Model
+class CollegeStreamCutoff extends Model implements Auditable
 {
+    use AuditableTrait;
+
     protected $table = 'college.college_stream_cutoffs';
 
     public $timestamps = false;

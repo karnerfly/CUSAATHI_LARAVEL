@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
+use OwenIt\Auditing\Auditable as AuditableTrait;
+use OwenIt\Auditing\Contracts\Auditable;
 
 /**
  * @property int $id
@@ -20,8 +22,10 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $created_at
  */
 #[Fillable(['address_line_1', 'address_line_2', 'pincode', 'district', 'area_zone', 'locality_tag', 'google_map_url'])]
-class Location extends Model
+class Location extends Model implements Auditable
 {
+    use AuditableTrait;
+
     protected $table = 'college.locations';
 
     public const UPDATED_AT = null;
