@@ -2,12 +2,11 @@
 
 namespace App\Http\Requests\Admin\College;
 
-use App\Enums\CollegeImageGroup;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\File;
 
-class StoreCollegeImageRequest extends FormRequest
+class UploadCollegeThumbnail extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,9 +24,12 @@ class StoreCollegeImageRequest extends FormRequest
     public function rules(): array
     {
         return [
-            '*.url' => ['required', 'string', 'url'],
-            '*.group' => ['required', 'string', Rule::enum(CollegeImageGroup::class)],
-            '*.alt_text' => ['required', 'string', 'min:4', 'max:100'],
+            'file' => [
+                'required',
+                File::types(['jpg', 'jpeg', 'png', 'webp'])
+                    ->min(10)
+                    ->max(5 * 1024),
+            ],
         ];
     }
 }

@@ -35,6 +35,7 @@ class CollegeDetailResource extends JsonResource
             'location' => CollegeLocationResource::make($this->whenLoaded('location')),
             'images' => CollegeImageResource::collection($this->whenLoaded('images')),
             'facilities' => FacilityResource::collection($this->whenLoaded('facilities')),
+            'streams' => CollegeStreamResource::collection($this->whenLoaded('streams')),
             'verified_at' => $this->verified_at,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,

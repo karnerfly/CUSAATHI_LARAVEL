@@ -20,9 +20,11 @@ class Stream extends Model
 
     public $timestamps = false;
 
-    public function college(): BelongsToMany
+    public function colleges(): BelongsToMany
     {
-        return $this->belongsToMany(College::class)->withPivot(['eligibility', 'duration']);
+        return $this->belongsToMany(College::class)
+            ->using(CollegeStream::class)
+            ->withPivot(['id', 'eligibility', 'duration']);
     }
 
     public function course(): BelongsTo

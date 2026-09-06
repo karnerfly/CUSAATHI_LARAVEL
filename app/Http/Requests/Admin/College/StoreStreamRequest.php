@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Admin\College;
 
+use App\Models\College\Course;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -24,7 +25,7 @@ class StoreStreamRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'course_id' => ['required', 'integer', Rule::exists('courses', 'id')],
+            'course_id' => ['required', 'integer', Rule::exists(Course::class, 'id')],
             'name' => ['required', 'string', 'max:100'],
             'slug' => ['required', 'string', 'max:100', 'regex:/^[a-z0-9]+(?:-[a-z0-9]+)*$/'],
         ];

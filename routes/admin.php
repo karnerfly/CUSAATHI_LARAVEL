@@ -170,13 +170,16 @@ Route::prefix('colleges')
         Route::post('', [CollegeController::class, 'store']);
         Route::get('{college}', [CollegeController::class, 'show']);
         Route::put('{college}', [CollegeController::class, 'update']);
+        Route::put('{college}/thumbnail', [CollegeController::class, 'upload_thumbnail']);
         Route::delete('{college}', [CollegeController::class, 'destroy']);
         Route::post('{college}/restore', [CollegeController::class, 'restore'])->withTrashed();
 
         Route::post('{college}/verify', [CollegeController::class, 'verify']);
         Route::post('{college}/unverify', [CollegeController::class, 'unverify']);
-        Route::post('{college}/images', [CollegeController::class, 'add_image_to_college']);
+        Route::post('{college}/images', [CollegeController::class, 'add_images_to_college']);
         Route::post('{college}/locations', [CollegeController::class, 'add_location_to_college']);
         Route::post('{college}/facilities', [CollegeController::class, 'add_facility_to_college']);
         Route::delete('{college}/facilities', [CollegeController::class, 'remove_facility_from_college']);
+        Route::post('{college}/streams', [CollegeController::class, 'add_stream_to_college']);
+        Route::put('college-stream/{college_stream}', [CollegeController::class, 'update_college_stream']);
     });

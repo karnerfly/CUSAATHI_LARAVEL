@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Admin\College;
 
+use App\Models\College\CourseType;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -24,7 +25,7 @@ class StoreCourseRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'course_type_id' => ['required', 'integer', Rule::exists('course_types', 'id')],
+            'course_type_id' => ['required', 'integer', Rule::exists(CourseType::class, 'id')],
             'name' => ['required', 'string', 'max:100'],
             'code' => ['required', 'string', 'max:20'],
         ];

@@ -44,7 +44,7 @@ class StoreCollegeRequest extends FormRequest
             'accreditation_body' => ['required', 'string', 'uppercase'],
             'accreditation_grade' => ['required', 'string', 'regex:/^[A-F](\+{0,2})$/'],
             'accreditation_year' => ['required', 'integer', 'digits:4', 'min:1800'],
-            'accreditation_value' => ['required', 'decimal:0,10'],
+            'accreditation_value' => ['required', 'numeric', 'min:0', 'max:10'],
             'contact_details' => ['nullable', 'json'],
         ];
     }

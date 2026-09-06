@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Admin\College;
 
+use App\Models\College\Facility;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -24,7 +25,7 @@ class StoreCollegeFacilityRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'facility_id' => ['required', 'integer', Rule::exists('facilities', 'id')],
+            'facility_id' => ['required', 'integer', Rule::exists(Facility::class, 'id')],
         ];
     }
 }

@@ -17,7 +17,7 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @property bool $revoked
  * @property int $last_activity
  */
-#[Fillable('id', 'user_id', 'ip_address', 'user_agent', 'payload', 'last_activity', 'revoked')]
+#[Fillable(['id', 'user_id', 'ip_address', 'user_agent', 'payload', 'revoked', 'last_activity'])]
 class Session extends Model implements Auditable
 {
     use AuditableTrait;

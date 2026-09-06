@@ -31,7 +31,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property Carbon|null $deleted_at
  */
 #[
-    Fillable(
+    Fillable([
         'name',
         'description',
         'slug',
@@ -45,7 +45,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
         'accreditation_value',
         'contact_details',
         'verified_at',
-    ),
+    ]),
 ]
 class College extends Model
 {
@@ -74,7 +74,9 @@ class College extends Model
 
     public function streams(): BelongsToMany
     {
-        return $this->belongsToMany(Stream::class)->withPivot(['eligibility', 'duration']);
+        return $this->belongsToMany(Stream::class)
+            ->using(CollegeStream::class)
+            ->withPivot(['id', 'eligibility', 'duration']);
     }
 
     public function facilities(): BelongsToMany

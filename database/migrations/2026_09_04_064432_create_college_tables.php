@@ -86,10 +86,13 @@ return new class extends Migration {
         });
 
         Schema::create('college.college_stream', function (Blueprint $table) {
+            $table->id();
             $table->foreignId('college_id')->constrained('college.colleges')->cascadeOnDelete();
             $table->foreignId('stream_id')->constrained('college.streams')->cascadeOnDelete();
-            $table->string('eligibility');
+            $table->string('eligibility', 255);
             $table->integer('duration');
+
+            $table->unique(['college_id', 'stream_id']);
         });
 
         Schema::create('college.facilities', function (Blueprint $table) {
@@ -102,6 +105,25 @@ return new class extends Migration {
         Schema::create('college.college_facility', function (Blueprint $table) {
             $table->foreignId('college_id')->constrained('college.colleges')->cascadeOnDelete();
             $table->foreignId('facility_id')->constrained('college.facilities')->cascadeOnDelete();
+
+            $table->unique(['college_id', 'facility_id']);
+        });
+
+        Schema::create('college.college_stream_fee_structures', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('college_stream_id')->unique()->constrained('college.college_stream')->cascadeOnDelete();
+            $table->integer('fee_year');
+            $table->double('admission_fee');
+            $table->double('total_fee');
+            $table->timestamp('verified_at')->nullable();
+        });
+
+        Schema::create('college.college_stream_cutoffs', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('college_stream_id')->constrained('college.college_stream')->cascadeOnDelete();
+            $table->string('category', 10);
+            $table->double('marks');
+            $table->timestamp('published_at')->nullable();
         });
     }
 
@@ -119,5 +141,7 @@ return new class extends Migration {
         Schema::dropIfExists('college.streams');
         Schema::dropIfExists('college.facilities');
         Schema::dropIfExists('college.college_facility');
+        Schema::dropIfExists('college.college_stream_fee_structures');
+        Schema::dropIfExists('college.college_stream_cutoffs');
     }
 };

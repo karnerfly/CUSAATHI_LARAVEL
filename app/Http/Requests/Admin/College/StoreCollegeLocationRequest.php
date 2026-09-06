@@ -25,7 +25,6 @@ class StoreCollegeLocationRequest extends FormRequest
         return [
             'address_line_1' => ['required', 'string', 'min:4', 'max:255'],
             'address_line_2' => ['nullable', 'string', 'min:4', 'max:255'],
-            // 'college_id' => ['required', 'integer', Rule::exists(College::class, 'id')],
             'pincode' => ['required', 'string', 'size:6'],
             'district' => ['required', 'string', 'min:4', 'max:100'],
             'area_zone' => ['required', 'string', 'min:4', 'max:20'],
@@ -33,14 +32,4 @@ class StoreCollegeLocationRequest extends FormRequest
             'google_map_url' => ['required', 'string', 'url'],
         ];
     }
-
-    /**
-     * Custom attribute names for validation keys.
-     */
-    // public function attributes(): array
-    // {
-    //     return [
-    //         'college_id' => 'college',
-    //     ];
-    // }
 }
