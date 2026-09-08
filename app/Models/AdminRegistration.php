@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Mail;
+use OwenIt\Auditing\Auditable as AuditableTrait;
+use OwenIt\Auditing\Contracts\Auditable;
 
 /**
  * @property string $email
@@ -22,8 +24,10 @@ use Illuminate\Support\Facades\Mail;
  */
 #[Fillable(['email', 'admin_registration_campaign_id', 'token', 'payload', 'expiration', 'sent_at'])]
 #[Hidden(['payload'])]
-class AdminRegistration extends Model
+class AdminRegistration extends Model implements Auditable
 {
+    use AuditableTrait;
+
     protected $keyType = 'string';
 
     protected $primaryKey = 'email';

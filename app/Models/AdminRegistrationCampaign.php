@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
+use OwenIt\Auditing\Auditable as AuditableTrait;
+use OwenIt\Auditing\Contracts\Auditable;
 
 /**
  * @property int $id
@@ -16,8 +18,10 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $created_at
  */
 #[Fillable(['admin_id', 'active', 'expires_at'])]
-class AdminRegistrationCampaign extends Model
+class AdminRegistrationCampaign extends Model implements Auditable
 {
+    use AuditableTrait;
+
     const UPDATED_AT = null;
 
     protected $casts = [
