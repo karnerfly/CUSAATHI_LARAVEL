@@ -11,7 +11,9 @@ use App\Http\Requests\Admin\Auth\ResetPasswordRequest;
 use App\Http\Resources\Admin\Admin\AdminResource;
 use App\Models\Admin;
 use App\Models\AdminRegistration;
+use App\Models\AdminRegistrationCampaign;
 use Dedoc\Scramble\Attributes\Group;
+use Dedoc\Scramble\Attributes\IgnoreParam;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -34,7 +36,7 @@ class AuthController extends Controller
             'active' => true,
         ]);
 
-        if (!$auth_passed) {
+        if (! $auth_passed) {
             return response()->json(
                 [
                     'message' => 'Invalid email or password.',
@@ -101,14 +103,21 @@ class AuthController extends Controller
     /**
      *  Request for an admin registration.
      */
+    #[IgnoreParam('cmpid')]
     public function registration_request(AdminRegistrationRequest $request)
     {
-        $validated = $request->validated();
+        $cmpid = $request->query('cmpid');
 
+        if (! $request->hasValidSignature() || ! AdminRegistrationCampaign::findOrFail($cmpid)->active()) {
+            abort(403, 'This action is unauthorized.');
+        }
+
+        $validated = $request->validated();
         $token = Str::random(48);
 
         AdminRegistration::create([
             'email' => $validated['email'],
+            'admin_registration_campaign_id' => $cmpid,
             'token' => $token,
             'payload' => $validated,
         ]);
@@ -125,9 +134,13 @@ class AuthController extends Controller
 
         $registration = AdminRegistration::where('token', $validated['token'])
             ->where('expiration', '>', now()->timestamp)
-            ->firstOrFail();
+            ->first();
 
-        $details = $registration->getDetails();
+        if (! $registration || ! $registration->campaign()->first()->active()) {
+            abort(403, 'This action is unauthorized.');
+        }
+
+        $details = $registration->details;
 
         if (Admin::where('email', $details['email'])->exists()) {
             return response()->json(

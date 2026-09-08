@@ -10,12 +10,12 @@ use App\Http\Controllers\Admin\College\CourseController;
 use App\Http\Controllers\Admin\College\CourseTypeController;
 use App\Http\Controllers\Admin\College\FacilityController;
 use App\Http\Controllers\Admin\College\StreamController;
-use App\Http\Controllers\Admin\NoticeController;
 use App\Http\Controllers\Admin\ContactMessageController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\Newsletter\CampaignController;
 use App\Http\Controllers\Admin\Newsletter\SubscriberController;
 use App\Http\Controllers\Admin\Newsletter\TopicController;
+use App\Http\Controllers\Admin\NoticeController;
 use App\Http\Controllers\Admin\PermissionController;
 use Illuminate\Support\Facades\Route;
 
@@ -25,7 +25,7 @@ Route::controller(AuthController::class)
         Route::post('login', 'login');
         Route::post('forgot-password', 'forgot_password');
         Route::post('reset-password', 'reset_password');
-        Route::post('registration/request', 'registration_request');
+        Route::post('registration/request', 'registration_request')->name('api.admin.registration');
         Route::post('registration/complete', 'complete_registration_request');
         Route::post('logout', 'logout');
     });
@@ -59,21 +59,34 @@ Route::controller(PermissionController::class)
 Route::controller(AdminController::class)
     ->middleware(['auth:sanctum', 'session.revoked', 'ensure.admin'])
     ->group(function () {
-        Route::get('', 'get_all_admins')->can('read:admin');
-        Route::post('', 'create_admin')->can('create:admin');
+        Route::get('', 'index_admins')->can('read:admin');
+        Route::post('', 'store_admin')->can('create:admin');
 
-        Route::get('registrations', 'get_registration_requests')->can('read:admin-registration-request');
+        Route::get('registrations/campaigns', 'index_registration_campaigns')->can('read:admin-registration-campaign');
+        Route::post('registrations/campaigns', 'store_registration_campaign')->can(
+            'create:admin-registration-campaign',
+        );
+        Route::get('registrations/campaigns/{campaign}', 'show_registration_campaign')->can(
+            'read:admin-registration-campaign',
+        );
+        Route::post('registrations/campaigns/{campaign}/deactivate', 'deactivate_registration_campaign')->can(
+            'deactivate:admin-registration-campaign',
+        );
+        Route::post('registrations/campaigns/{campaign}/activate', 'activate_registration_campaign')->can(
+            'activate:admin-registration-campaign',
+        );
+
         Route::post('registrations/{registration}/send', 'send_registration_mail')->can('send:admin-registration-mail');
         Route::delete('registrations/{registration}', 'delete_registration')->can('delete:admin-registration-request');
 
         Route::post('{admin}/activate', 'activate_admin')->can('activate:admin');
         Route::post('{admin}/deactivate', 'deactivate_admin')->can('deactivate:admin');
 
-        Route::get('{admin}/sessions', 'get_admin_sessions')->can('read:admin-session');
+        Route::get('{admin}/sessions', 'index_admin_sessions')->can('read:admin-session');
         Route::delete('{admin}/sessions/{session}', 'revoke_admin_session')->can('revoke:admin-session');
         Route::post('{admin}/sessions/{session}/restore', 'restore_admin_session')->can('restore:admin-session');
 
-        Route::delete('{admin}', 'delete_admin')->can('delete:admin');
+        Route::delete('{admin}', 'destroy_admin')->can('delete:admin');
         Route::post('{admin}/restore', 'restore_admin')->withTrashed()->can('restore:admin');
     });
 

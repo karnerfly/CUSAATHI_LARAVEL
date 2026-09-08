@@ -22,7 +22,7 @@ class SubscriberController extends Controller
         $query = Subscriber::query()->select(['id', 'user_id', 'active', 'email', 'verified_at', 'created_at']);
 
         $query->when($request->has('email'), function ($query) use ($request) {
-            $query->where('email', 'ilike', '%' . $request->email . '%');
+            $query->where('email', 'ilike', '%'.$request->email.'%');
         });
 
         $query->when($request->has('user_id'), function ($query) use ($request) {

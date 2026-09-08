@@ -43,19 +43,19 @@ class CollegeController extends Controller
 
         $query->when(
             $request->has('deleted'),
-            fn($query) => $request->boolean('deleted') ? $query->onlyTrashed() : $query->whereNull('deleted_at'),
+            fn ($query) => $request->boolean('deleted') ? $query->onlyTrashed() : $query->whereNull('deleted_at'),
         );
-        $query->when($request->has('name'), fn($query) => $query->where('name', 'like', "%{$request->name}%"));
-        $query->when($request->has('type'), fn($query) => $query->where('type', $request->type));
+        $query->when($request->has('name'), fn ($query) => $query->where('name', 'like', "%{$request->name}%"));
+        $query->when($request->has('type'), fn ($query) => $query->where('type', $request->type));
 
         $query->when(
             $request->has('established_year'),
-            fn($query) => $query->where('established_year', $request->established_year),
+            fn ($query) => $query->where('established_year', $request->established_year),
         );
 
         $query->when(
             $request->has('accreditation_grade'),
-            fn($query) => $query->where('accreditation_grade', $request->accreditation_grade),
+            fn ($query) => $query->where('accreditation_grade', $request->accreditation_grade),
         );
 
         $query->orderBy('created_at', $request->string('order', 'desc'));
@@ -228,7 +228,7 @@ class CollegeController extends Controller
     public function remove_facility_from_college(StoreCollegeFacilityRequest $request, College $college)
     {
         $facility_id = $request->input('facility_id');
-        if (!$college->facilities()->where('facility_id', $facility_id)->exists()) {
+        if (! $college->facilities()->where('facility_id', $facility_id)->exists()) {
             return response()->json(
                 [
                     'message' => 'Facility does not belong to this college.',

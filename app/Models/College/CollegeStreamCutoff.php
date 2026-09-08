@@ -29,7 +29,7 @@ class CollegeStreamCutoff extends Model implements Auditable
         'published_at' => 'datetime',
     ];
 
-    function college_stream(): BelongsTo
+    public function college_stream(): BelongsTo
     {
         return $this->belongsTo(CollegeStream::class);
     }

@@ -20,14 +20,14 @@ class NoticeController extends Controller
 
         $query->when(
             $request->has('deleted'),
-            fn($query) => $request->boolean('deleted') ? $query->onlyTrashed() : $query->whereNull('deleted_at'),
+            fn ($query) => $request->boolean('deleted') ? $query->onlyTrashed() : $query->whereNull('deleted_at'),
         );
-        $query->when($request->has('curriculum'), fn($query) => $query->where('curriculum', $request->curriculum));
-        $query->when($request->has('category'), fn($query) => $query->where('category', $request->category));
-        $query->when($request->has('semester'), fn($query) => $query->where('semester', $request->semester));
-        $query->when($request->has('semester'), fn($query) => $query->where('semester', $request->semester));
-        $query->when($request->has('from'), fn($query) => $query->whereDate('published_date', '>=', $request->from));
-        $query->when($request->has('to'), fn($query) => $query->whereDate('published_date', '<=', $request->to));
+        $query->when($request->has('curriculum'), fn ($query) => $query->where('curriculum', $request->curriculum));
+        $query->when($request->has('category'), fn ($query) => $query->where('category', $request->category));
+        $query->when($request->has('semester'), fn ($query) => $query->where('semester', $request->semester));
+        $query->when($request->has('semester'), fn ($query) => $query->where('semester', $request->semester));
+        $query->when($request->has('from'), fn ($query) => $query->whereDate('published_date', '>=', $request->from));
+        $query->when($request->has('to'), fn ($query) => $query->whereDate('published_date', '<=', $request->to));
         $query->orderBy('created_at', $request->string('order', 'desc'));
 
         $notices = $query->paginate($request->integer('per_page', 25))->withQueryString();

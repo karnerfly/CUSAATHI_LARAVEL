@@ -26,6 +26,7 @@ class StoreCollegeRequest extends FormRequest
     public function rules(): array
     {
         $cid = $this->route('college')?->id ?? $this->route('college');
+
         return [
             'name' => ['required', 'string', 'min:4', 'max:200'],
             'description' => ['nullable', 'string', 'min:4', 'max:5000'],

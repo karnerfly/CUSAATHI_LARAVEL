@@ -74,7 +74,7 @@ class PermissionController extends Controller
         $permission_ids = $request->input('permission_ids');
         $changes = $admin->permissions()->syncWithoutDetaching($permission_ids);
 
-        if (!empty($changes['attached'])) {
+        if (! empty($changes['attached'])) {
             $admin->auditEvent = 'permission_assigned';
             $admin->isCustomEvent = true;
             $admin->auditCustomOld = [];

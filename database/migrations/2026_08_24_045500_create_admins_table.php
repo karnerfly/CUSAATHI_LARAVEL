@@ -4,21 +4,13 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
     /**
      * Run the migrations.
      */
     public function up(): void
     {
-        Schema::create('admin_registrations', function (Blueprint $table) {
-            $table->string('email')->primary();
-            $table->string('token');
-            $table->longText('payload');
-            $table->bigInteger('expiration')->nullable();
-            $table->timestamp('sent_at')->nullable();
-            $table->timestamp('created_at')->nullable();
-        });
-
         Schema::create('admins', function (Blueprint $table) {
             $table->id();
             $table->string('name', 100);
@@ -28,6 +20,27 @@ return new class extends Migration {
             $table->boolean('active')->default(true);
             $table->timestamps();
             $table->softDeletes();
+        });
+
+        Schema::create('admin_registration_campaigns', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('admin_id')->constrained('admins')->cascadeOnDelete();
+            $table->boolean('active')->default(true);
+            $table->timestamp('expires_at')->nullable();
+            $table->timestamp('created_at')->nullable();
+        });
+
+        Schema::create('admin_registrations', function (Blueprint $table) {
+            $table->string('email')->primary();
+            $table
+                ->foreignId('admin_registration_campaign_id')
+                ->constrained('admin_registration_campaigns')
+                ->cascadeOnDelete();
+            $table->string('token');
+            $table->longText('payload');
+            $table->bigInteger('expiration')->nullable();
+            $table->timestamp('sent_at')->nullable();
+            $table->timestamp('created_at')->nullable();
         });
 
         Schema::create('permissions', function (Blueprint $table) {
@@ -55,5 +68,7 @@ return new class extends Migration {
         Schema::dropIfExists('admins');
         Schema::dropIfExists('permissions');
         Schema::dropIfExists('admin_permission');
+        Schema::dropIfExists('admin_registration_campaigns');
+        Schema::dropIfExists('admin_registrations');
     }
 };

@@ -30,14 +30,14 @@ class NewsletterSubscriberDetailResource extends JsonResource
             'updated_at' => $this->updated_at,
             'user' => $this->when(
                 $this->relationLoaded('user'),
-                fn() => $this->user
+                fn () => $this->user
                     ? [
                         'name' => $this->user->name,
                         'profile_url' => $this->user->profile_url,
                     ]
                     : null,
             ),
-            'topic_ids' => $this->when($this->relationLoaded('topics'), fn() => $this->topics->pluck('id')->values()),
+            'topic_ids' => $this->when($this->relationLoaded('topics'), fn () => $this->topics->pluck('id')->values()),
         ];
     }
 }

@@ -18,7 +18,7 @@ class ContactMessageController extends Controller
     {
         $query = ContactMessage::query();
 
-        $query->when($request->has('status'), fn($query) => $query->where('status', $request->status));
+        $query->when($request->has('status'), fn ($query) => $query->where('status', $request->status));
         $query->when($request->has('search'), function ($query) use ($request) {
             $search = $request->search;
 

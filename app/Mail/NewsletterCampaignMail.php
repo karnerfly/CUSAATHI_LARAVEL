@@ -61,7 +61,7 @@ class NewsletterCampaignMail extends Mailable implements ShouldQueue
         $client_url = config('app.client_url');
         $tracking_url = route('api.newsletter.track-open', ['log_id' => $this->log->id]);
         $unsubscribe_url =
-            rtrim($client_url, '/') . '/newsletter/unsubscribe?token=' . $this->subscriber->unsubscribe_token;
+            rtrim($client_url, '/').'/newsletter/unsubscribe?token='.$this->subscriber->unsubscribe_token;
 
         return <<<HTML
             {$this->campaign->content}

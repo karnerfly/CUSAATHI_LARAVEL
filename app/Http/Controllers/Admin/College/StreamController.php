@@ -7,7 +7,6 @@ use App\Http\Requests\Admin\College\StoreStreamRequest;
 use App\Http\Resources\Admin\College\StreamResource;
 use App\Models\College\Stream;
 use Dedoc\Scramble\Attributes\Group;
-use Illuminate\Http\Request;
 
 #[Group('Admin College Meta Management')]
 class StreamController extends Controller

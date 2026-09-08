@@ -73,4 +73,9 @@ class Admin extends Authenticatable implements Auditable
     {
         return $this->hasMany(Session::class, 'user_id');
     }
+
+    public function registration_campaigns(): HasMany
+    {
+        return $this->hasMany(AdminRegistrationCampaign::class);
+    }
 }

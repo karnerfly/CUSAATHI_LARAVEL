@@ -30,7 +30,7 @@ class CollegeStreamFeeStructure extends Model implements Auditable
         'verified_at' => 'datetime',
     ];
 
-    function college_stream(): BelongsTo
+    public function college_stream(): BelongsTo
     {
         return $this->belongsTo(CollegeStream::class);
     }

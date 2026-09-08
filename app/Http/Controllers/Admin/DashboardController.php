@@ -35,7 +35,7 @@ class DashboardController extends Controller
 
         $admin = Admin::find($admin->id);
 
-        if (!Hash::check($validated['old_password'], $admin->password)) {
+        if (! Hash::check($validated['old_password'], $admin->password)) {
             return response()->json(
                 [
                     'message' => 'Unauthenticated.',

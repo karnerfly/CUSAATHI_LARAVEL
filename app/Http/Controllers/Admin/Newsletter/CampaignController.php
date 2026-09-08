@@ -19,18 +19,17 @@ class CampaignController extends Controller
     {
         $query = Newsletter::with('topic:id,name,slug')->latest();
 
-        if ($request->has('status')) {
-            match ($request->input('status')) {
+        $query->when(
+            $request->has('status'),
+            fn ($query) => match ($request->input('status')) {
                 'sent' => $query->whereNotNull('sent_at'),
                 'scheduled' => $query->whereNull('sent_at')->whereNotNull('scheduled_for'),
                 'draft' => $query->whereNull('sent_at')->whereNull('scheduled_for'),
                 default => null,
-            };
-        }
+            },
+        );
 
-        if ($request->has('topic_id')) {
-            $query->where('topic_id', $request->query('topic_id'));
-        }
+        $query->when($request->has('topic_id'), fn ($query) => $query->where('topic_id', $request->topic_id));
 
         $campaigns = $query->paginate($request->integer('per_page', 25))->withQueryString();
 
