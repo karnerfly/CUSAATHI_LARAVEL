@@ -4,6 +4,8 @@ namespace App\Providers;
 
 use App\Models\Admin;
 use App\Models\Permission;
+use App\Services\Admin\RegistrationService;
+use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Routing\UrlGenerator;
 use Illuminate\Support\Facades\Gate;
@@ -29,7 +31,7 @@ class AppServiceProvider extends ServiceProvider
             $url->forceScheme('https');
         }
 
-        if (! app()->runningInConsole() && Schema::hasTable('permissions')) {
+        if (!app()->runningInConsole() && Schema::hasTable('permissions')) {
             Permission::all()->each(function ($permission) {
                 Gate::define($permission->ability, function (Admin $admin) use ($permission) {
                     return $admin->hasAbility($permission->ability);

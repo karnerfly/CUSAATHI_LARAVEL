@@ -25,6 +25,8 @@ Route::controller(AuthController::class)
         Route::post('login', 'login');
         Route::post('forgot-password', 'forgot_password');
         Route::post('reset-password', 'reset_password');
+        Route::post('registration/request', 'registration_request');
+        Route::post('registration/complete', 'complete_registration_request');
         Route::post('logout', 'logout');
     });
 
@@ -59,6 +61,10 @@ Route::controller(AdminController::class)
     ->group(function () {
         Route::get('', 'get_all_admins')->can('read:admin');
         Route::post('', 'create_admin')->can('create:admin');
+
+        Route::get('registrations', 'get_registration_requests')->can('read:admin-registration-request');
+        Route::post('registrations/{registration}/send', 'send_registration_mail')->can('send:admin-registration-mail');
+        Route::delete('registrations/{registration}', 'delete_registration')->can('delete:admin-registration-request');
 
         Route::post('{admin}/activate', 'activate_admin')->can('activate:admin');
         Route::post('{admin}/deactivate', 'deactivate_admin')->can('deactivate:admin');

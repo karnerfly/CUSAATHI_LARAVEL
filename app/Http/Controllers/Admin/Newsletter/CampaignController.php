@@ -20,7 +20,7 @@ class CampaignController extends Controller
         $query = Newsletter::with('topic:id,name,slug')->latest();
 
         if ($request->has('status')) {
-            match ($request->query('status')) {
+            match ($request->input('status')) {
                 'sent' => $query->whereNotNull('sent_at'),
                 'scheduled' => $query->whereNull('sent_at')->whereNotNull('scheduled_for'),
                 'draft' => $query->whereNull('sent_at')->whereNull('scheduled_for'),

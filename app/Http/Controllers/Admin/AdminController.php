@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\Admin\IndexAdminRegistrationRequest;
 use App\Http\Requests\Admin\Admin\StoreAdminRequest;
 use App\Http\Resources\Admin\Session\SessionResource;
 use App\Models\Admin;
+use App\Models\AdminRegistration;
 use App\Models\Session;
 use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\Request;
@@ -14,7 +16,7 @@ use Illuminate\Http\Request;
 class AdminController extends Controller
 {
     /**
-     * Get all admins
+     * Display a listing of all admins.
      */
     public function get_all_admins()
     {
@@ -22,7 +24,7 @@ class AdminController extends Controller
     }
 
     /**
-     * Store a newly created admin.
+     * Store a newly created admin in storage.
      */
     public function create_admin(StoreAdminRequest $request)
     {
@@ -39,7 +41,7 @@ class AdminController extends Controller
     }
 
     /**
-     * Deactivate specified admin.
+     * Deactivate the specified admin.
      */
     public function deactivate_admin(Admin $admin)
     {
@@ -49,7 +51,7 @@ class AdminController extends Controller
     }
 
     /**
-     * Activate specified admin.
+     * Activate the specified admin.
      */
     public function activate_admin(Admin $admin)
     {
@@ -59,7 +61,7 @@ class AdminController extends Controller
     }
 
     /**
-     * Get specified admin sessions.
+     * Display specified admin sessions.
      */
     public function get_admin_sessions(Request $request, Admin $admin)
     {
@@ -124,7 +126,7 @@ class AdminController extends Controller
     }
 
     /**
-     * Soft Delete specified admin.
+     * Remove the specified admin from storage.
      */
     public function delete_admin(Admin $admin)
     {
@@ -135,11 +137,61 @@ class AdminController extends Controller
     }
 
     /**
-     * Restore specified admin.
+     * Restore the specified admin from storage.
      */
     public function restore_admin(Admin $admin)
     {
         $admin->restore();
+
+        return response()->noContent();
+    }
+
+    /**
+     * Display a listing of admin registrations.
+     */
+    public function get_registration_requests(IndexAdminRegistrationRequest $request)
+    {
+        $query = AdminRegistration::latest();
+
+        if ($request->has('status')) {
+            match ($request->input('status')) {
+                'pending' => $query->whereNull('sent_at'),
+                'sent' => $query->whereNotNull('sent_at'),
+                'expired' => $query->whereNotNull('expiration')->where('expiration', '<=', now()->timestamp),
+                default => null,
+            };
+        }
+
+        $registrations = $query->get();
+
+        return $registrations;
+    }
+
+    /**
+     * Send admin registration mail.
+     */
+    public function send_registration_mail(AdminRegistration $registration)
+    {
+        $now = now();
+        $expiry = $now;
+        $expiry->addMinutes(config('app.admin_registration_expiry'));
+
+        $registration->update([
+            'expiration' => $expiry->timestamp,
+            'sent_at' => $now,
+        ]);
+
+        $registration->sendRegistrationMail(config('app.admin_url'));
+
+        return response()->noContent();
+    }
+
+    /**
+     * Remove the specified admin registration.
+     */
+    public function delete_registration(AdminRegistration $registration)
+    {
+        $registration->delete();
 
         return response()->noContent();
     }

@@ -3,11 +3,14 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\Auth\AdminRegistrationCompleteRequest;
+use App\Http\Requests\Admin\Auth\AdminRegistrationRequest;
 use App\Http\Requests\Admin\Auth\ForgotPasswordRequest;
 use App\Http\Requests\Admin\Auth\LoginRequest;
 use App\Http\Requests\Admin\Auth\ResetPasswordRequest;
 use App\Http\Resources\Admin\Admin\AdminResource;
 use App\Models\Admin;
+use App\Models\AdminRegistration;
 use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Http\Request;
@@ -15,6 +18,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Str;
 
 #[Group('Admin Auth')]
 class AuthController extends Controller
@@ -92,6 +96,64 @@ class AuthController extends Controller
         }
 
         return response()->noContent();
+    }
+
+    /**
+     *  Request for an admin registration.
+     */
+    public function registration_request(AdminRegistrationRequest $request)
+    {
+        $validated = $request->validated();
+
+        $token = Str::random(48);
+
+        AdminRegistration::create([
+            'email' => $validated['email'],
+            'token' => $token,
+            'payload' => $validated,
+        ]);
+
+        return response()->noContent();
+    }
+
+    /**
+     *  Complete the request for an admin registration.
+     */
+    public function complete_registration_request(AdminRegistrationCompleteRequest $request)
+    {
+        $validated = $request->validated();
+
+        $registration = AdminRegistration::where('token', $validated['token'])
+            ->where('expiration', '>', now()->timestamp)
+            ->firstOrFail();
+
+        $details = $registration->getDetails();
+
+        if (Admin::where('email', $details['email'])->exists()) {
+            return response()->json(
+                [
+                    'message' => 'Admin already exists.',
+                ],
+                409,
+            );
+        }
+
+        $admin = Admin::create([
+            'name' => $details['name'],
+            'email' => $details['email'],
+            'password' => $validated['password'],
+        ]);
+
+        $admin->refresh();
+        $registration->delete();
+
+        return response()->json(
+            [
+                'message' => 'Admin created.',
+                'admin' => AdminResource::make($admin),
+            ],
+            201,
+        );
     }
 
     /**
