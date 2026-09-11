@@ -13,7 +13,7 @@ use App\Models\Admin;
 use App\Models\AdminRegistration;
 use App\Models\AdminRegistrationCampaign;
 use Dedoc\Scramble\Attributes\Group;
-use Dedoc\Scramble\Attributes\IgnoreParam;
+use Dedoc\Scramble\Attributes\QueryParameter;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -36,7 +36,7 @@ class AuthController extends Controller
             'active' => true,
         ]);
 
-        if (! $auth_passed) {
+        if (!$auth_passed) {
             return response()->json(
                 [
                     'message' => 'Invalid email or password.',
@@ -103,13 +103,20 @@ class AuthController extends Controller
     /**
      *  Request for an admin registration.
      */
-    #[IgnoreParam('cmpid')]
+    #[QueryParameter('cmpid', required: true, type: 'integer')]
+    #[QueryParameter('expires', required: true, type: 'integer')]
+    #[QueryParameter('signature', required: true, type: 'string')]
     public function registration_request(AdminRegistrationRequest $request)
     {
         $cmpid = $request->query('cmpid');
 
-        if (! $request->hasValidSignature() || ! AdminRegistrationCampaign::findOrFail($cmpid)->active()) {
-            abort(403, 'This action is unauthorized.');
+        if (!AdminRegistrationCampaign::findOrFail($cmpid)->active()) {
+            return response()->json(
+                [
+                    'message' => 'Invalid campaign.',
+                ],
+                422,
+            );
         }
 
         $validated = $request->validated();
@@ -136,7 +143,7 @@ class AuthController extends Controller
             ->where('expiration', '>', now()->timestamp)
             ->first();
 
-        if (! $registration || ! $registration->campaign()->first()->active()) {
+        if (!$registration || !$registration->campaign()->first()->active()) {
             abort(403, 'This action is unauthorized.');
         }
 
@@ -175,8 +182,8 @@ class AuthController extends Controller
     public function logout(Request $request)
     {
         Auth::guard('admin')->logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
+        // $request->session()->invalidate();
+        // $request->session()->regenerateToken();
 
         return response(status: 204);
     }

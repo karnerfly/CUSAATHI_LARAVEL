@@ -4,6 +4,7 @@ use App\Http\Controllers\Public\ContactMessageController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('admins')->group(base_path('routes/admin.php'));
+Route::prefix('users')->group(base_path('routes/user.php'));
 Route::prefix('newsletter')->group(base_path('routes/newsletter.php'));
 
 // public routes

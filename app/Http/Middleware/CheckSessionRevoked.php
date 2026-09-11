@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Session;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -17,9 +18,9 @@ class CheckSessionRevoked
     public function handle(Request $request, Closure $next): Response
     {
         $sid = $request->session()->getId();
-        $session = DB::table('sessions')->where('id', $sid)->first();
+        $session = Session::find($sid);
 
-        if (! $session || $session->revoked) {
+        if (!$session || $session->revoked) {
             return response()->json(
                 [
                     'message' => 'Unauthenticated.',

@@ -25,7 +25,9 @@ Route::controller(AuthController::class)
         Route::post('login', 'login');
         Route::post('forgot-password', 'forgot_password');
         Route::post('reset-password', 'reset_password');
-        Route::post('registration/request', 'registration_request')->name('api.admin.registration');
+        Route::post('registration/request', 'registration_request')
+            ->middleware('signed')
+            ->name('api.admin.registration');
         Route::post('registration/complete', 'complete_registration_request');
         Route::post('logout', 'logout');
     });
@@ -158,13 +160,15 @@ Route::controller(NoticeController::class)
 Route::prefix('colleges')
     ->middleware(['auth:sanctum', 'session.revoked', 'ensure.admin'])
     ->group(function () {
-        Route::controller(CourseTypeController::class)->group(function () {
-            Route::get('', 'index')->can('read:course-type');
-            Route::post('', 'store')->can('create:course-type');
-            Route::get('{type}', 'show')->can('read:course-type');
-            Route::put('{type}', 'update')->can('update:course-type');
-            Route::delete('{type}', 'destroy')->can('delete:course-type');
-        });
+        Route::controller(CourseTypeController::class)
+            ->prefix('course-types')
+            ->group(function () {
+                Route::get('', 'index')->can('read:course-type');
+                Route::post('', 'store')->can('create:course-type');
+                Route::get('{type}', 'show')->can('read:course-type');
+                Route::put('{type}', 'update')->can('update:course-type');
+                Route::delete('{type}', 'destroy')->can('delete:course-type');
+            });
 
         Route::controller(CourseController::class)
             ->prefix('courses')

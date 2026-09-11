@@ -2,9 +2,9 @@
 
 namespace App\Http\Middleware;
 
-use App\Models\User;
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
 class EnsureUser
@@ -16,15 +16,22 @@ class EnsureUser
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $user = $request->user('web');
-        if (! $user || ! ($user instanceof User)) {
+        if (!Auth::guard('web')->check()) {
+            return response()->json(['message' => 'Unauthenticated.'], 401);
+        }
+
+        $user = Auth::guard('web')->user();
+
+        if (!$user->active) {
             return response()->json(
                 [
-                    'message' => 'Unauthenticated.',
+                    'message' => 'Your account has been deactivated. Please contact support.',
                 ],
-                401,
+                403,
             );
         }
+
+        Auth::shouldUse('web');
 
         return $next($request);
     }

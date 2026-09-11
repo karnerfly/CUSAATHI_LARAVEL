@@ -68,7 +68,7 @@ class Subscriber extends Model implements Auditable
 
     public function sendVerificationMail(string $token)
     {
-        $verification_url = rtrim(config('app.client_url'), '/').'/newsletter/verify?token='.urlencode($token);
+        $verification_url = rtrim(config('app.client_url'), '/') . '/newsletter/verify?token=' . urlencode($token);
         Mail::to($this->email)->queue(new NewsletterVerifyEmailMail($verification_url));
     }
 }
