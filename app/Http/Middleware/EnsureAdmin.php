@@ -17,7 +17,12 @@ class EnsureAdmin
     public function handle(Request $request, Closure $next): Response
     {
         if (!Auth::guard('admin')->check()) {
-            return response()->json(['message' => 'Unauthenticated.'], 401);
+            return response()->json(
+                [
+                    'message' => 'Unauthenticated.',
+                ],
+                401,
+            );
         }
 
         $admin = Auth::guard('admin')->user();

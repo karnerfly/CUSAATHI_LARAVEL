@@ -17,7 +17,12 @@ class EnsureUser
     public function handle(Request $request, Closure $next): Response
     {
         if (!Auth::guard('web')->check()) {
-            return response()->json(['message' => 'Unauthenticated.'], 401);
+            return response()->json(
+                [
+                    'message' => 'Unauthenticated.',
+                ],
+                401,
+            );
         }
 
         $user = Auth::guard('web')->user();

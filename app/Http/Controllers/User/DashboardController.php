@@ -1,42 +1,42 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\Dashboard\ChangeNameRequest;
-use App\Http\Requests\Admin\Dashboard\ChangePasswordRequest;
-use App\Http\Requests\Admin\Dashboard\UploadProfilePictureRequest;
-use App\Http\Resources\Admin\Admin\AdminResource;
+use App\Http\Requests\User\Dashboard\ChangeNameRequest;
+use App\Http\Requests\User\Dashboard\ChangePasswordRequest;
+use App\Http\Requests\User\Dashboard\UploadProfilePictureRequest;
 use App\Http\Resources\Session\SessionResource;
-use App\Models\Admin;
+use App\Http\Resources\User\UserResource;
 use App\Models\Session;
+use App\Models\User;
 use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
-#[Group('Admin Dashboard')]
+#[Group('User Dashboard')]
 class DashboardController extends Controller
 {
     /**
-     * Get details of current admin.
+     * Get details of current user.
      */
-    public function get_current_admin(Request $request)
+    public function get_current_user(Request $request)
     {
-        return new AdminResource($request->user('admin'));
+        return new UserResource($request->user('web'));
     }
 
     /**
-     * Change current admin password.
+     * Change current user password.
      */
     public function change_password(ChangePasswordRequest $request)
     {
         $validated = $request->validated();
-        $admin = $request->user('admin');
+        $user = $request->user('web');
 
-        $admin = Admin::find($admin->id);
+        $user = User::find($user->id);
 
-        if (!Hash::check($validated['old_password'], $admin->password)) {
+        if (!Hash::check($validated['old_password'], $user->password)) {
             return response()->json(
                 [
                     'message' => 'Unauthenticated.',
@@ -45,26 +45,26 @@ class DashboardController extends Controller
             );
         }
 
-        $admin->password = Hash::make($validated['password']);
-        $admin->save();
+        $user->password = Hash::make($validated['password']);
+        $user->save();
 
-        Auth::guard('admin')->login($admin);
+        Auth::guard('web')->login($user);
 
         return response()->noContent();
     }
 
     /**
-     * Change current admin name.
+     * Change current user name.
      */
     public function change_name(ChangeNameRequest $request)
     {
         $name = $request->input('name');
-        $admin = $request->user('admin');
+        $user = $request->user('web');
 
-        $admin = Admin::find($admin->id);
+        $user = User::find($user->id);
 
-        $admin->name = $name;
-        $admin->save();
+        $user->name = $name;
+        $user->save();
 
         return response()->noContent();
     }
@@ -75,13 +75,13 @@ class DashboardController extends Controller
     public function upload_profile_picture(UploadProfilePictureRequest $request)
     {
         $file = $request->file('file');
-        $admin = $request->user('admin');
-        $admin = Admin::find($admin->id);
+        $user = $request->user('web');
+        $user = User::find($user->id);
 
         $path = $file->store('profiles', 'public');
 
-        $admin->profile_url = $path;
-        $admin->save();
+        $user->profile_url = $path;
+        $user->save();
 
         return response()->noContent();
     }
@@ -92,8 +92,8 @@ class DashboardController extends Controller
     public function get_sessions(Request $request)
     {
         $sid = $request->session()->getId();
-        $admin = $request->user('admin');
-        $sessions = $admin
+        $user = $request->user('web');
+        $sessions = $user
             ->sessions()
             ->where('last_activity', '>=', now()->subMinutes(config('session.lifetime'))->getTimestamp())
             ->orderBy('id')
@@ -115,8 +115,8 @@ class DashboardController extends Controller
      */
     public function delete_session(Request $request, Session $session)
     {
-        $admin = $request->user('admin');
-        $session = $admin->sessions()->where('id', $session->id)->firstOrFail();
+        $user = $request->user('web');
+        $session = $user->sessions()->where('id', $session->id)->firstOrFail();
         $session->delete();
 
         return response()->noContent();

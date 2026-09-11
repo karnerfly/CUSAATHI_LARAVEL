@@ -2,8 +2,6 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-
 use App\Notifications\User\EmailVerificationNotification;
 use App\Notifications\User\PasswordResetNotification;
 use Database\Factories\UserFactory;
@@ -11,6 +9,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -24,6 +23,7 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @property string $name
  * @property string $email
  * @property Carbon|null $email_verified_at
+ * @property string|null $profile_url
  * @property string|null $password
  * @property string $provider
  * @property string|null $provider_id
@@ -35,7 +35,7 @@ use OwenIt\Auditing\Contracts\Auditable;
  */
 #[Fillable(['name', 'email', 'email_verified_at', 'password', 'provider', 'provider_id'])]
 #[Hidden(['password'])]
-class User extends Authenticatable implements MustVerifyEmail, Auditable
+class User extends Authenticatable implements Auditable, MustVerifyEmail
 {
     /** @use HasFactory<UserFactory> */
     use AuditableTrait, HasFactory, Notifiable, SoftDeletes;
@@ -51,6 +51,11 @@ class User extends Authenticatable implements MustVerifyEmail, Auditable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function sessions(): HasMany
+    {
+        return $this->hasMany(Session::class, 'user_id');
     }
 
     #[Override]

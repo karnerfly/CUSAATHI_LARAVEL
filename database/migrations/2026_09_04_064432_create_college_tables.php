@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -134,12 +133,13 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('college.colleges');
-        Schema::dropIfExists('college.notices');
+        Schema::dropIfExists('notices');
         Schema::dropIfExists('college.locations');
         Schema::dropIfExists('college.images');
         Schema::dropIfExists('college.course_types');
         Schema::dropIfExists('college.courses');
         Schema::dropIfExists('college.streams');
+        Schema::dropIfExists('college.college_stream');
         Schema::dropIfExists('college.facilities');
         Schema::dropIfExists('college.college_facility');
         Schema::dropIfExists('college.college_stream_fee_structures');

@@ -96,7 +96,7 @@ class AuthController extends Controller
      */
     public function login(LoginRequest $request)
     {
-        $auth_passed = Auth::guard()->attempt([
+        $auth_passed = Auth::guard('web')->attempt([
             'email' => $request->input('email'),
             'password' => $request->input('password'),
             'provider' => AuthProvider::LOCAL,
@@ -116,7 +116,7 @@ class AuthController extends Controller
 
         return response()->json([
             'message' => 'User logged in successfully.',
-            'user' => new UserResource($request->user()),
+            'user' => new UserResource($request->user('web')),
         ]);
     }
 

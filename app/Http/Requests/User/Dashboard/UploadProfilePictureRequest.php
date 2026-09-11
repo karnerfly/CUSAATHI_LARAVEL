@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Requests\Admin\College;
+namespace App\Http\Requests\User\Dashboard;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\File;
 
-class UploadCollegeThumbnail extends FormRequest
+class UploadProfilePictureRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.

@@ -15,6 +15,7 @@ return new class extends Migration {
             $table->string('name');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
+            $table->text('profile_url')->nullable();
             $table->string('password')->nullable();
             $table->string('provider', 100);
             $table->string('provider_id')->nullable();
