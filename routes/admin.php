@@ -111,32 +111,36 @@ Route::controller(ContactMessageController::class)
 Route::prefix('newsletter')
     ->middleware(['auth:sanctum', 'session.revoked', 'ensure.admin'])
     ->group(function () {
-        Route::get('topics', [TopicController::class, 'index'])->can('read:newsletter-topic');
-        Route::post('topics', [TopicController::class, 'store'])->can('create:newsletter-topic');
-        Route::get('topics/{topic}', [TopicController::class, 'show'])->can('read:newsletter-topic');
-        Route::put('topics/{topic}', [TopicController::class, 'update'])->can('update:newsletter-topic');
-        Route::delete('topics/{topic}', [TopicController::class, 'destroy'])->can('delete:newsletter-topic');
+        Route::controller(TopicController::class)
+            ->prefix('topics')
+            ->group(function () {
+                Route::get('', 'index')->can('read:newsletter-topic');
+                Route::post('', 'store')->can('create:newsletter-topic');
+                Route::get('{topic}', 'show')->can('read:newsletter-topic');
+                Route::put('{topic}', 'update')->can('update:newsletter-topic');
+                Route::delete('{topic}', 'destroy')->can('delete:newsletter-topic');
+            });
 
-        Route::get('subscribers', [SubscriberController::class, 'index'])->can('read:newsletter-subscriber');
-        Route::get('subscribers/{subscriber}', [SubscriberController::class, 'show'])->can(
-            'read:newsletter-subscriber',
-        );
-        Route::put('subscribers/{subscriber}', [SubscriberController::class, 'update'])->can(
-            'update:newsletter-subscriber',
-        );
-        Route::delete('subscribers/{subscriber}', [SubscriberController::class, 'destroy'])->can(
-            'delete:newsletter-subscriber',
-        );
+        Route::controller(SubscriberController::class)
+            ->prefix('subscribers')
+            ->group(function () {
+                Route::get('', 'index')->can('read:newsletter-subscriber');
+                Route::get('{subscriber}', 'show')->can('read:newsletter-subscriber');
+                Route::put('{subscriber}', 'update')->can('update:newsletter-subscriber');
+                Route::delete('{subscriber}', 'destroy')->can('delete:newsletter-subscriber');
+            });
 
-        Route::get('campaigns', [CampaignController::class, 'index'])->can('read:newsletter');
-        Route::post('campaigns', [CampaignController::class, 'store'])->can('create:newsletter');
-        Route::get('campaigns/{campaign}/analytics', [CampaignController::class, 'analytics'])->can('read:newsletter');
-        Route::get('campaigns/{campaign}', [CampaignController::class, 'show'])->can('read:newsletter');
-        Route::put('campaigns/{campaign}', [CampaignController::class, 'update'])->can('update:newsletter');
-        Route::delete('campaigns/{campaign}', [CampaignController::class, 'destroy'])->can('delete:newsletter');
-        Route::post('campaigns/{campaign}/dispatch', [CampaignController::class, 'dispatch'])->can(
-            'dispatch:newsletter',
-        );
+        Route::controller(CampaignController::class)
+            ->prefix('campaigns')
+            ->group(function () {
+                Route::get('', 'index')->can('read:newsletter');
+                Route::post('', 'store')->can('create:newsletter');
+                Route::get('{campaign}/analytics', 'analytics')->can('read:newsletter');
+                Route::get('{campaign}', 'show')->can('read:newsletter');
+                Route::put('{campaign}', 'update')->can('update:newsletter');
+                Route::delete('{campaign}', 'destroy')->can('delete:newsletter');
+                Route::post('{campaign}/dispatch', 'dispatch')->can('dispatch:newsletter');
+            });
     });
 
 Route::controller(NoticeController::class)
@@ -154,67 +158,74 @@ Route::controller(NoticeController::class)
 Route::prefix('colleges')
     ->middleware(['auth:sanctum', 'session.revoked', 'ensure.admin'])
     ->group(function () {
-        Route::get('course-types', [CourseTypeController::class, 'index'])->can('read:course-type');
-        Route::post('course-types', [CourseTypeController::class, 'store'])->can('create:course-type');
-        Route::get('course-types/{type}', [CourseTypeController::class, 'show'])->can('read:course-type');
-        Route::put('course-types/{type}', [CourseTypeController::class, 'update'])->can('update:course-type');
-        Route::delete('course-types/{type}', [CourseTypeController::class, 'destroy'])->can('delete:course-type');
+        Route::controller(CourseTypeController::class)->group(function () {
+            Route::get('', 'index')->can('read:course-type');
+            Route::post('', 'store')->can('create:course-type');
+            Route::get('{type}', 'show')->can('read:course-type');
+            Route::put('{type}', 'update')->can('update:course-type');
+            Route::delete('{type}', 'destroy')->can('delete:course-type');
+        });
 
-        Route::get('courses', [CourseController::class, 'index'])->can('read:course');
-        Route::post('courses', [CourseController::class, 'store'])->can('create:course');
-        Route::get('courses/{course}', [CourseController::class, 'show'])->can('read:course');
-        Route::put('courses/{course}', [CourseController::class, 'update'])->can('update:course');
-        Route::delete('courses/{course}', [CourseController::class, 'destroy'])->can('delete:course');
+        Route::controller(CourseController::class)
+            ->prefix('courses')
+            ->group(function () {
+                Route::get('', 'index')->can('read:course');
+                Route::post('', 'store')->can('create:course');
+                Route::get('{course}', 'show')->can('read:course');
+                Route::put('{course}', 'update')->can('update:course');
+                Route::delete('{course}', 'destroy')->can('delete:course');
+            });
 
-        Route::get('streams', [StreamController::class, 'index'])->can('read:stream');
-        Route::post('streams', [StreamController::class, 'store'])->can('create:stream');
-        Route::get('streams/{stream}', [StreamController::class, 'show'])->can('read:stream');
-        Route::put('streams/{stream}', [StreamController::class, 'update'])->can('update:stream');
-        Route::delete('streams/{stream}', [StreamController::class, 'destroy'])->can('delete:stream');
+        Route::controller(StreamController::class)
+            ->prefix('streams')
+            ->group(function () {
+                Route::get('', 'index')->can('read:stream');
+                Route::post('', 'store')->can('create:stream');
+                Route::get('{stream}', 'show')->can('read:stream');
+                Route::put('{stream}', 'update')->can('update:stream');
+                Route::delete('{stream}', 'destroy')->can('delete:stream');
+            });
 
-        Route::get('facilities', [FacilityController::class, 'index'])->can('read:facility');
-        Route::post('facilities', [FacilityController::class, 'store'])->can('create:facility');
-        Route::get('facilities/{facility}', [FacilityController::class, 'show'])->can('read:facility');
-        Route::put('facilities/{facility}', [FacilityController::class, 'update'])->can('update:facility');
-        Route::delete('facilities/{facility}', [FacilityController::class, 'destroy'])->can('delete:facility');
+        Route::controller(FacilityController::class)
+            ->prefix('facilities')
+            ->group(function () {
+                Route::get('', 'index')->can('read:facility');
+                Route::post('', 'store')->can('create:facility');
+                Route::get('{facility}', 'show')->can('read:facility');
+                Route::put('{facility}', 'update')->can('update:facility');
+                Route::delete('{facility}', 'destroy')->can('delete:facility');
+            });
 
-        Route::get('images/{image}', [CollegeImageController::class, 'show'])->can('read:college-image');
-        Route::put('images/{image}', [CollegeImageController::class, 'update'])->can('update:college-image');
-        Route::delete('images/{image}', [CollegeImageController::class, 'destroy'])->can('delete:college-image');
+        Route::controller(CollegeImageController::class)
+            ->prefix('images')
+            ->group(function () {
+                Route::get('{image}', 'show')->can('read:college-image');
+                Route::put('{image}', 'update')->can('update:college-image');
+                Route::delete('{image}', 'destroy')->can('delete:college-image');
+            });
 
-        Route::get('locations/{location}', [CollegeLocationController::class, 'show'])->can('read:college-location');
-        Route::put('locations/{location}', [CollegeLocationController::class, 'update'])->can(
-            'update:college-location',
-        );
+        Route::controller(CollegeLocationController::class)
+            ->prefix('locations')
+            ->group(function () {
+                Route::get('{location}', 'show')->can('read:college-location');
+                Route::put('{location}', 'update')->can('update:college-location');
+            });
 
-        Route::get('', [CollegeController::class, 'index'])->can('read:college');
-        Route::post('', [CollegeController::class, 'store'])->can('create:college');
-        Route::get('{college}', [CollegeController::class, 'show'])->can('read:college');
-        Route::put('{college}', [CollegeController::class, 'update'])->can('update:college');
-        Route::put('{college}/thumbnail', [CollegeController::class, 'upload_thumbnail'])->can('update:college');
-        Route::delete('{college}', [CollegeController::class, 'destroy'])->can('delete:college');
-        Route::post('{college}/restore', [CollegeController::class, 'restore'])
-            ->withTrashed()
-            ->can('restore:college');
-
-        Route::post('{college}/verify', [CollegeController::class, 'verify'])->can('verify:college');
-        Route::post('{college}/unverify', [CollegeController::class, 'unverify'])->can('unverify:college');
-        Route::post('{college}/images', [CollegeController::class, 'add_images_to_college'])->can(
-            'create:college-image',
-        );
-        Route::post('{college}/locations', [CollegeController::class, 'add_location_to_college'])->can(
-            'create:college-location',
-        );
-        Route::post('{college}/facilities', [CollegeController::class, 'add_facility_to_college'])->can(
-            'map:college-facility',
-        );
-        Route::delete('{college}/facilities', [CollegeController::class, 'remove_facility_from_college'])->can(
-            'unmap:college-facility',
-        );
-        Route::post('{college}/streams', [CollegeController::class, 'add_stream_to_college'])->can(
-            'add:college-stream',
-        );
-        Route::put('college-stream/{college_stream}', [CollegeController::class, 'update_college_stream'])->can(
-            'update:college-stream',
-        );
+        Route::controller(CollegeController::class)->group(function () {
+            Route::get('', 'index')->can('read:college');
+            Route::post('', 'store')->can('create:college');
+            Route::get('{college}', 'show')->can('read:college');
+            Route::put('{college}', 'update')->can('update:college');
+            Route::put('{college}/thumbnail', 'upload_thumbnail')->can('update:college');
+            Route::delete('{college}', 'destroy')->can('delete:college');
+            Route::post('{college}/restore', 'restore')->withTrashed()->can('restore:college');
+            Route::post('{college}/verify', 'verify')->can('verify:college');
+            Route::post('{college}/unverify', 'unverify')->can('unverify:college');
+            Route::post('{college}/images', 'add_images_to_college')->can('create:college-image');
+            Route::post('{college}/locations', 'add_location_to_college')->can('create:college-location');
+            Route::post('{college}/facilities', 'add_facility_to_college')->can('map:college-facility');
+            Route::delete('{college}/facilities', 'remove_facility_from_college')->can('unmap:college-facility');
+            Route::post('{college}/streams', 'add_stream_to_college')->can('add:college-stream');
+            Route::put('college-stream/{college_stream}', 'update_college_stream')->can('update:college-stream');
+        });
     });
