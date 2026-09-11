@@ -22,7 +22,7 @@ class SessionResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $agent = new Agent;
+        $agent = new Agent();
         $agent->setUserAgent($this->user_agent);
 
         return [
@@ -33,6 +33,7 @@ class SessionResource extends JsonResource
             'browser' => $agent->browser(),
             'current' => $this->current,
             'last_active' => Carbon::createFromTimestamp($this->last_activity)->diffForHumans(),
+            'signed_out' => $this->revoked,
         ];
     }
 }

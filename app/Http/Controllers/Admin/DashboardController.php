@@ -93,19 +93,27 @@ class DashboardController extends Controller
     {
         $sid = $request->session()->getId();
         $admin = $request->user('admin');
+
+        /** @var \Illuminate\Auth\SessionGuard $admin_guard */
+        $admin_guard = Auth::guard('admin');
+        $admin_auth_key = $admin_guard->getName();
+
         $sessions = $admin
             ->sessions()
             ->where('last_activity', '>=', now()->subMinutes(config('session.lifetime'))->getTimestamp())
             ->orderBy('id')
             ->get()
+            ->filter(function ($session) use ($admin_auth_key, $admin) {
+                $payload = json_decode(base64_decode($session->payload), true);
+                return isset($payload[$admin_auth_key]) && $payload[$admin_auth_key] == $admin->id;
+            })
             ->map(function ($session) use ($sid) {
-                $session->current = false;
-                if ($session->id == $sid) {
-                    $session->current = true;
-                }
-
+                $session->current = $session->id === $sid;
+                $payload = json_decode(base64_decode($session->payload), true);
+                $session->revoked = $payload['admin_revoked'] ?? false;
                 return $session;
-            });
+            })
+            ->values();
 
         return SessionResource::collection($sessions);
     }
@@ -116,8 +124,25 @@ class DashboardController extends Controller
     public function delete_session(Request $request, Session $session)
     {
         $admin = $request->user('admin');
-        $session = $admin->sessions()->where('id', $session->id)->firstOrFail();
-        $session->delete();
+
+        /** @var \Illuminate\Auth\SessionGuard $admin_guard */
+        $admin_guard = Auth::guard('admin');
+        $admin_auth_key = $admin_guard->getName();
+        $payload = json_decode(base64_decode($session->payload), true);
+
+        if (!isset($payload[$admin_auth_key]) || $payload[$admin_auth_key] != $admin->id) {
+            return response()->json(
+                [
+                    'message' => 'Invalid session.',
+                ],
+                404,
+            );
+        }
+
+        $payload['admin_revoked'] = true;
+
+        $session->payload = base64_encode(json_encode($payload));
+        $session->save();
 
         return response()->noContent();
     }

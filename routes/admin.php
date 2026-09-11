@@ -33,7 +33,7 @@ Route::controller(AuthController::class)
     });
 
 Route::controller(DashboardController::class)
-    ->middleware(['auth:sanctum', 'session.revoked', 'ensure.admin'])
+    ->middleware(['auth:sanctum', 'ensure.admin'])
     ->group(function () {
         Route::get('me', 'get_current_admin');
         Route::get('sessions', 'get_sessions');
@@ -44,7 +44,7 @@ Route::controller(DashboardController::class)
     });
 
 Route::controller(PermissionController::class)
-    ->middleware(['auth:sanctum', 'session.revoked', 'ensure.admin'])
+    ->middleware(['auth:sanctum', 'ensure.admin'])
     ->group(function () {
         Route::get('permissions', 'index')->can('read:permission');
         Route::get('permissions/{permission}', 'show')->can('read:permission');
@@ -59,7 +59,7 @@ Route::controller(PermissionController::class)
     });
 
 Route::controller(AdminController::class)
-    ->middleware(['auth:sanctum', 'session.revoked', 'ensure.admin'])
+    ->middleware(['auth:sanctum', 'ensure.admin'])
     ->group(function () {
         Route::get('', 'index_admins')->can('read:admin');
         Route::post('', 'store_admin')->can('create:admin');
@@ -94,7 +94,7 @@ Route::controller(AdminController::class)
 
 Route::controller(AuditController::class)
     ->prefix('audits')
-    ->middleware(['auth:sanctum', 'session.revoked', 'ensure.admin'])
+    ->middleware(['auth:sanctum', 'ensure.admin'])
     ->group(function () {
         Route::get('', 'index')->can('read:audit');
         Route::get('{audit}', 'show')->can('read:audit');
@@ -102,7 +102,7 @@ Route::controller(AuditController::class)
 
 Route::controller(ContactMessageController::class)
     ->prefix('contact-messages')
-    ->middleware(['auth:sanctum', 'session.revoked', 'ensure.admin'])
+    ->middleware(['auth:sanctum', 'ensure.admin'])
     ->group(function () {
         Route::get('', 'index')->can('read:contact-message');
         Route::get('{message}', 'show')->can('read:contact-message');
@@ -111,7 +111,7 @@ Route::controller(ContactMessageController::class)
     });
 
 Route::prefix('newsletter')
-    ->middleware(['auth:sanctum', 'session.revoked', 'ensure.admin'])
+    ->middleware(['auth:sanctum', 'ensure.admin'])
     ->group(function () {
         Route::controller(TopicController::class)
             ->prefix('topics')
@@ -147,7 +147,7 @@ Route::prefix('newsletter')
 
 Route::controller(NoticeController::class)
     ->prefix('notices')
-    ->middleware(['auth:sanctum', 'session.revoked', 'ensure.admin'])
+    ->middleware(['auth:sanctum', 'ensure.admin'])
     ->group(function () {
         Route::get('', 'index')->can('read:notice');
         Route::post('', 'store')->can('create:notice');
@@ -158,7 +158,7 @@ Route::controller(NoticeController::class)
     });
 
 Route::prefix('colleges')
-    ->middleware(['auth:sanctum', 'session.revoked', 'ensure.admin'])
+    ->middleware(['auth:sanctum', 'ensure.admin'])
     ->group(function () {
         Route::controller(CourseTypeController::class)
             ->prefix('course-types')

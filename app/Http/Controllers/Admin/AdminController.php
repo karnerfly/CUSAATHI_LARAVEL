@@ -7,13 +7,14 @@ use App\Http\Requests\Admin\Admin\IndexAdminRegistrationCampaignRequest;
 use App\Http\Requests\Admin\Admin\StoreAdminRegistrationCampaignRequest;
 use App\Http\Requests\Admin\Admin\StoreAdminRequest;
 use App\Http\Resources\Admin\Admin\AdminRegistrationCampaignResource;
-use App\Http\Resources\Admin\Session\SessionResource;
+use App\Http\Resources\Session\SessionResource;
 use App\Models\Admin;
 use App\Models\AdminRegistration;
 use App\Models\AdminRegistrationCampaign;
 use App\Models\Session;
 use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 #[Group('Admin Management')]
 class AdminController extends Controller
@@ -69,19 +70,27 @@ class AdminController extends Controller
     public function index_admin_sessions(Request $request, Admin $admin)
     {
         $sid = $request->session()->getId();
+
+        /** @var \Illuminate\Auth\SessionGuard $admin_guard */
+        $admin_guard = Auth::guard('admin');
+        $admin_auth_key = $admin_guard->getName();
+
         $sessions = $admin
             ->sessions()
             ->where('last_activity', '>=', now()->subMinutes(config('session.lifetime'))->getTimestamp())
             ->orderBy('id')
             ->get()
+            ->filter(function ($session) use ($admin_auth_key, $admin) {
+                $payload = json_decode(base64_decode($session->payload), true);
+                return isset($payload[$admin_auth_key]) && $payload[$admin_auth_key] == $admin->id;
+            })
             ->map(function ($session) use ($sid) {
-                $session->current = false;
-                if ($session->id == $sid) {
-                    $session->current = true;
-                }
-
+                $session->current = $session->id === $sid;
+                $payload = json_decode(base64_decode($session->payload), true);
+                $session->revoked = $payload['admin_revoked'] ?? false;
                 return $session;
-            });
+            })
+            ->values();
 
         return SessionResource::collection($sessions);
     }
@@ -91,8 +100,12 @@ class AdminController extends Controller
      */
     public function revoke_admin_session(Request $request, Admin $admin, Session $session)
     {
-        $session_exists = $admin->sessions()->where('id', $session->id)->exists();
-        if (! $session_exists) {
+        /** @var \Illuminate\Auth\SessionGuard $admin_guard */
+        $admin_guard = Auth::guard('admin');
+        $admin_auth_key = $admin_guard->getName();
+        $payload = json_decode(base64_decode($session->payload), true);
+
+        if (!isset($payload[$admin_auth_key]) || $payload[$admin_auth_key] != $admin->id) {
             return response()->json(
                 [
                     'message' => 'Session does not belong to this admin.',
@@ -101,7 +114,9 @@ class AdminController extends Controller
             );
         }
 
-        $session->revoked = true;
+        $payload['admin_revoked'] = true;
+
+        $session->payload = base64_encode(json_encode($payload));
         $session->save();
 
         return response()->noContent();
@@ -112,8 +127,12 @@ class AdminController extends Controller
      */
     public function restore_admin_session(Request $request, Admin $admin, Session $session)
     {
-        $session_exists = $admin->sessions()->where('id', $session->id)->exists();
-        if (! $session_exists) {
+        /** @var \Illuminate\Auth\SessionGuard $admin_guard */
+        $admin_guard = Auth::guard('admin');
+        $admin_auth_key = $admin_guard->getName();
+        $payload = json_decode(base64_decode($session->payload), true);
+
+        if (!isset($payload[$admin_auth_key]) || $payload[$admin_auth_key] != $admin->id) {
             return response()->json(
                 [
                     'message' => 'Session does not belong to this admin.',
@@ -122,7 +141,9 @@ class AdminController extends Controller
             );
         }
 
-        $session->revoked = false;
+        $payload['admin_revoked'] = false;
+
+        $session->payload = base64_encode(json_encode($payload));
         $session->save();
 
         return response()->noContent();
@@ -158,7 +179,7 @@ class AdminController extends Controller
 
         $query->when(
             $request->has('status'),
-            fn ($query) => match ($request->input('status')) {
+            fn($query) => match ($request->input('status')) {
                 'expired' => $query->whereNotNull('expires_at')->where('expires_at', '<=', now()),
                 'active' => $query->where('active', true)->where(function ($q) {
                     $q->whereNull('expires_at')->orWhere('expires_at', '>', now());
@@ -244,7 +265,7 @@ class AdminController extends Controller
      */
     public function send_registration_mail(AdminRegistration $registration)
     {
-        if (! $registration->campaign()->first()->active()) {
+        if (!$registration->campaign()->first()->active()) {
             return response()->json(
                 [
                     'message' => 'Registration campaign is expired or not active.',

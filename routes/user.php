@@ -7,8 +7,8 @@ use Illuminate\Support\Facades\Route;
 Route::controller(AuthController::class)
     ->prefix('auth')
     ->group(function () {
-        Route::post('login', 'login');
         Route::post('register', 'register');
+        Route::post('login', 'login');
         Route::post('forgot-password', 'forgot_password');
         Route::post('reset-password', 'reset_password');
         Route::post('logout', 'logout');
@@ -25,7 +25,7 @@ Route::controller(AuthController::class)
     });
 
 Route::controller(DashboardController::class)
-    ->middleware(['auth:sanctum', 'session.revoked', 'ensure.user', 'verified'])
+    ->middleware(['auth:sanctum', 'ensure.user', 'verified'])
     ->group(function () {
         Route::get('me', 'get_current_user');
         Route::get('sessions', 'get_sessions');

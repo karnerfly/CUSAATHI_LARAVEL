@@ -22,7 +22,6 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->statefulApi();
         $middleware->alias([
-            'session.revoked' => CheckSessionRevoked::class,
             'ensure.admin' => EnsureAdmin::class,
             'ensure.user' => EnsureUser::class,
         ]);

@@ -27,12 +27,16 @@ class EnsureUser
 
         $user = Auth::guard('web')->user();
 
-        if (!$user->active) {
+        if ($request->session()->get('user_revoked') === true || !$user->active) {
+            // Auth::guard('web')->logout();
+
+            // $request->session()->forget('user_revoked');
+
             return response()->json(
                 [
-                    'message' => 'Your account has been deactivated. Please contact support.',
+                    'message' => 'Unauthenticated.',
                 ],
-                403,
+                401,
             );
         }
 

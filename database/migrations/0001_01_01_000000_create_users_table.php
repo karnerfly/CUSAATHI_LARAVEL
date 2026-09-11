@@ -37,7 +37,6 @@ return new class extends Migration {
             $table->string('ip_address', 45)->nullable();
             $table->text('user_agent')->nullable();
             $table->longText('payload');
-            $table->boolean('revoked')->default(false)->index();
             $table->integer('last_activity')->index();
         });
     }

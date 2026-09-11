@@ -27,12 +27,16 @@ class EnsureAdmin
 
         $admin = Auth::guard('admin')->user();
 
-        if (!$admin->active) {
+        if ($request->session()->get('admin_revoked') === true || !$admin->active) {
+            // Auth::guard('admin')->logout();
+
+            // $request->session()->forget('admin_revoked');
+
             return response()->json(
                 [
-                    'message' => 'Your account has been deactivated. Please contact support.',
+                    'message' => 'Unauthenticated.',
                 ],
-                403,
+                401,
             );
         }
 

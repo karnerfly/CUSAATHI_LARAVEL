@@ -93,19 +93,27 @@ class DashboardController extends Controller
     {
         $sid = $request->session()->getId();
         $user = $request->user('web');
+
+        /** @var \Illuminate\Auth\SessionGuard $web_guard */
+        $web_guard = Auth::guard('web');
+        $web_auth_key = $web_guard->getName();
+
         $sessions = $user
             ->sessions()
             ->where('last_activity', '>=', now()->subMinutes(config('session.lifetime'))->getTimestamp())
             ->orderBy('id')
             ->get()
+            ->filter(function ($session) use ($web_auth_key, $user) {
+                $payload = json_decode(base64_decode($session->payload), true);
+                return isset($payload[$web_auth_key]) && $payload[$web_auth_key] == $user->id;
+            })
             ->map(function ($session) use ($sid) {
-                $session->current = false;
-                if ($session->id == $sid) {
-                    $session->current = true;
-                }
-
+                $session->current = $session->id === $sid;
+                $payload = json_decode(base64_decode($session->payload), true);
+                $session->revoked = $payload['user_revoked'] ?? false;
                 return $session;
-            });
+            })
+            ->values();
 
         return SessionResource::collection($sessions);
     }
@@ -116,8 +124,25 @@ class DashboardController extends Controller
     public function delete_session(Request $request, Session $session)
     {
         $user = $request->user('web');
-        $session = $user->sessions()->where('id', $session->id)->firstOrFail();
-        $session->delete();
+
+        /** @var \Illuminate\Auth\SessionGuard $web_guard */
+        $web_guard = Auth::guard('web');
+        $web_auth_key = $web_guard->getName();
+        $payload = json_decode(base64_decode($session->payload), true);
+
+        if (!isset($payload[$web_auth_key]) || $payload[$web_auth_key] != $user->id) {
+            return response()->json(
+                [
+                    'message' => 'Invalid session.',
+                ],
+                404,
+            );
+        }
+
+        $payload['user_revoked'] = true;
+
+        $session->payload = base64_encode(json_encode($payload));
+        $session->save();
 
         return response()->noContent();
     }
