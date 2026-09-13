@@ -134,4 +134,8 @@ return [
     'verification' => [
         'expire' => (int) env('AUTH_VERIFICATION_EXPIRY', 60),
     ],
+
+    'admin_registration' => [
+        'expiry' => (int) env('AUTH_ADMIN_REGISRATION_EXPIRY', 30),
+    ],
 ];

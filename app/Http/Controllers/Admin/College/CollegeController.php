@@ -44,7 +44,7 @@ class CollegeController extends Controller
             $request->has('deleted'),
             fn($query) => $request->boolean('deleted') ? $query->onlyTrashed() : $query->whereNull('deleted_at'),
         );
-        $query->when($request->has('name'), fn($query) => $query->where('name', 'like', "%{$request->name}%"));
+        $query->when($request->has('name'), fn($query) => $query->where('name', 'ilike', "%{$request->name}%"));
         $query->when($request->has('type'), fn($query) => $query->where('type', $request->type));
 
         $query->when(

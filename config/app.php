@@ -121,6 +121,4 @@ return [
     'client_url' => env('APP_CLIENT_URL', 'http://localhost:5173'),
 
     'admin_url' => env('APP_ADMIN_URL', 'http://localhost:3000'),
-
-    'admin_registration_expiry' => (int) env('APP_ADMIN_REGISRATION_EXPIRY', 30),
 ];

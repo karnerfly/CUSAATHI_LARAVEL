@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\ContactMessageCategory;
 use App\Enums\ContactMessageStatus;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
@@ -17,6 +18,7 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @property int|null $user_id
  * @property string $name
  * @property string $email
+ * @property ContactMessageCategory $category
  * @property string|null $phone
  * @property string|null $subject
  * @property string $message
@@ -24,7 +26,7 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
-#[Fillable(['user_id', 'name', 'email', 'phone', 'subject', 'message', 'status'])]
+#[Fillable(['user_id', 'name', 'email', 'category', 'phone', 'subject', 'message', 'status'])]
 class ContactMessage extends Model implements Auditable
 {
     use AuditableTrait;

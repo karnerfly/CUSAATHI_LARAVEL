@@ -34,27 +34,27 @@ class AuditController extends Controller
             $q = $request->query;
             $query->whereHas('user', function ($query) use ($q) {
                 $query->where(function ($query) use ($q) {
-                    $query->where('name', 'like', "%{$q}%")->orWhere('email', 'like', "%{$q}%");
+                    $query->where('name', 'ilike', "%{$q}%")->orWhere('email', 'ilike', "%{$q}%");
                 });
             });
         });
 
-        $query->when($request->has('event'), fn ($query) => $query->whereIn('event', explode(',', $request->event)));
-        $query->when($request->has('actor_type'), fn ($query) => $query->where('actor_type', $request->actor_type));
-        $query->when($request->has('actor_id'), fn ($query) => $query->where('actor_id', $request->actor_id));
+        $query->when($request->has('event'), fn($query) => $query->whereIn('event', explode(',', $request->event)));
+        $query->when($request->has('actor_type'), fn($query) => $query->where('actor_type', $request->actor_type));
+        $query->when($request->has('actor_id'), fn($query) => $query->where('actor_id', $request->actor_id));
 
         $query->when(
             $request->has('auditable_type'),
-            fn ($query) => $query->where('auditable_type', $request->auditable_type),
+            fn($query) => $query->where('auditable_type', $request->auditable_type),
         );
 
         $query->when(
             $request->has('auditable_id'),
-            fn ($query) => $query->where('auditable_id', $request->auditable_id),
+            fn($query) => $query->where('auditable_id', $request->auditable_id),
         );
 
-        $query->when($request->has('from'), fn ($query) => $query->whereDate('created_at', '>=', $request->from));
-        $query->when($request->has('to'), fn ($query) => $query->whereDate('created_at', '<=', $request->to));
+        $query->when($request->has('from'), fn($query) => $query->whereDate('created_at', '>=', $request->from));
+        $query->when($request->has('to'), fn($query) => $query->whereDate('created_at', '<=', $request->to));
         $query->orderBy($request->string('sort', 'created_at'), $request->string('order', 'desc'));
 
         $audits = $query->paginate($request->integer('per_page', 25))->withQueryString();

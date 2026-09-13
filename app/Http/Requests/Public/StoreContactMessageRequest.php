@@ -2,8 +2,10 @@
 
 namespace App\Http\Requests\Public;
 
+use App\Enums\ContactMessageCategory;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreContactMessageRequest extends FormRequest
 {
@@ -25,6 +27,7 @@ class StoreContactMessageRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'min:4', 'max:100'],
             'email' => ['required', 'email', 'max:255'],
+            'category' => ['required', 'string', Rule::enum(ContactMessageCategory::class)],
             'phone' => ['nullable', 'string', 'max:20'],
             'subject' => ['required', 'string', 'max:255'],
             'message' => ['required', 'string'],

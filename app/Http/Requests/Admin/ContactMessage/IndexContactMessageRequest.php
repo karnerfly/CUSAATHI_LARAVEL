@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Admin\ContactMessage;
 
+use App\Enums\ContactMessageCategory;
 use App\Enums\ContactMessageStatus;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
@@ -26,6 +27,7 @@ class IndexContactMessageRequest extends FormRequest
     {
         return [
             'status' => ['sometimes', 'string', Rule::enum(ContactMessageStatus::class)],
+            'category' => ['sometimes', 'string', Rule::enum(ContactMessageCategory::class)],
             'search' => ['sometimes', 'string', 'max:255'],
             'per_page' => ['sometimes', 'integer', 'min:1', 'max:100'],
             'page' => ['sometimes', 'integer', 'min:1'],

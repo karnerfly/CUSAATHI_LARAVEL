@@ -276,7 +276,7 @@ class AdminController extends Controller
 
         $now = now();
         $expiry = $now;
-        $expiry->addMinutes(config('app.admin_registration_expiry'));
+        $expiry->addMinutes(config('auth.admin_registration.expiry'));
 
         $registration->update([
             'expiration' => $expiry->timestamp,

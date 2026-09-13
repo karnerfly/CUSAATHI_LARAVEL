@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -16,6 +15,7 @@ return new class extends Migration
             $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
             $table->string('name', 100);
             $table->string('email')->index();
+            $table->string('category', 20)->index();
             $table->string('phone', 20)->nullable();
             $table->string('subject', 255);
             $table->text('message');
