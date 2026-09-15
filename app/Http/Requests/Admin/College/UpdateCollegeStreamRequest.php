@@ -27,6 +27,7 @@ class UpdateCollegeStreamRequest extends FormRequest
         return [
             'eligibility' => ['required', 'string', 'min:4', 'max:255'],
             'duration' => ['required', 'integer', 'digits:1'],
+            'active' => ['required', 'boolean'],
             'fee_structure' => ['required', 'array'],
             'fee_structure.fee_year' => ['required', 'integer', 'digits:4', 'min:2000'],
             'fee_structure.admission_fee' => ['required', 'numeric', 'min:100', 'max:50000'],

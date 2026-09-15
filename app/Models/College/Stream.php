@@ -28,7 +28,8 @@ class Stream extends Model implements Auditable
     {
         return $this->belongsToMany(College::class)
             ->using(CollegeStream::class)
-            ->withPivot(['id', 'eligibility', 'duration']);
+            ->withPivot(['id', 'eligibility', 'duration', 'active'])
+            ->wherePivot('active', true);
     }
 
     public function course(): BelongsTo

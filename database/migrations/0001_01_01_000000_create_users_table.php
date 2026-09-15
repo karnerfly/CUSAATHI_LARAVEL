@@ -16,6 +16,7 @@ return new class extends Migration {
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->text('profile_url')->nullable();
+            $table->string('affiliation', 20)->nullable();
             $table->string('password')->nullable();
             $table->string('provider', 100);
             $table->string('provider_id')->nullable();

@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\User;
 
 use App\Enums\AuthProvider;
+use App\Enums\SocialAuthProvider;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\User\Auth\CompleteProfileRequest;
 use App\Http\Requests\User\Auth\ForgotPasswordRequest;
 use App\Http\Requests\User\Auth\LoginRequest;
 use App\Http\Requests\User\Auth\ResetPasswordRequest;
@@ -17,10 +19,12 @@ use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Password;
 use Laravel\Socialite\Socialite;
+use RuntimeException;
 
 #[Group('User Auth')]
 class AuthController extends Controller
@@ -96,12 +100,15 @@ class AuthController extends Controller
      */
     public function login(LoginRequest $request)
     {
-        $auth_passed = Auth::guard('web')->attempt([
-            'email' => $request->input('email'),
-            'password' => $request->input('password'),
-            'provider' => AuthProvider::LOCAL,
-            'active' => true,
-        ]);
+        $auth_passed = Auth::guard('web')->attempt(
+            [
+                'email' => $request->input('email'),
+                'password' => $request->input('password'),
+                'provider' => AuthProvider::LOCAL,
+                'active' => true,
+            ],
+            $request->input('remember', false),
+        );
 
         if (!$auth_passed) {
             return response()->json(
@@ -183,8 +190,23 @@ class AuthController extends Controller
     /**
      * Social login redirect.
      */
-    public function social_login_redirect(Request $request, AuthProvider $provider)
+    public function social_login_redirect(Request $request, SocialAuthProvider $provider)
     {
+        $redirect_key = 'social_ ' . $provider->value . '_redirect';
+        $redirect = $request->query('redirect', config('app.client_url'));
+        if (!str_starts_with($redirect, config('app.client_url'))) {
+            $redirect = config('app.client_url');
+        }
+
+        // $request->session()->put($redirect_key, $redirect);
+
+        $state = Crypt::encrypt(
+            json_encode([
+                $redirect_key => $redirect,
+                'expires_at' => now()->addMinute()->timestamp,
+            ]),
+        );
+
         /** @var \Laravel\Socialite\Two\AbstractProvider $socialite */
         $socialite = Socialite::driver($provider);
 
@@ -195,6 +217,7 @@ class AuthController extends Controller
                     ->scopes(['profile', 'email'])
                     ->with([
                         'prompt' => 'select_account',
+                        'state' => $state,
                     ])
                     ->redirect()
                     ->getTargetUrl(),
@@ -206,12 +229,91 @@ class AuthController extends Controller
     /**
      * Social login callback.
      */
-    public function social_login_callback(Request $request, AuthProvider $provider)
+    public function social_login_callback(Request $request, SocialAuthProvider $provider)
     {
-        /** @var \Laravel\Socialite\Two\AbstractProvider $socialite */
-        $socialite = Socialite::driver($provider);
-        $socialite->stateless()->user();
+        try {
+            $redirect_key = 'social_ ' . $provider->value . '_redirect';
 
-        return redirect(config('app.client_url'));
+            $state_q = $request->query('state');
+            if (!$state_q) {
+                throw new RuntimeException('invalid authentication parameters');
+            }
+
+            $state = json_decode(Crypt::decrypt($state_q), true);
+            if (!is_array($state) || !isset($state[$redirect_key], $state['expires_at'])) {
+                throw new RuntimeException('invalid authentication state');
+            }
+
+            if (now()->timestamp > $state['expires_at']) {
+                throw new RuntimeException('authentication state expired');
+            }
+
+            $redirect = $state[$redirect_key];
+
+            /** @var \Laravel\Socialite\Two\AbstractProvider $socialite */
+            $socialite = Socialite::driver($provider);
+            $social_user = $socialite->stateless()->user();
+
+            $user = User::where(['provider' => $provider->value, 'provider_id' => $social_user->getId()])->first();
+
+            if (!$user) {
+                $other_account = User::where(['email' => $social_user->getEmail()])->exists();
+                if ($other_account) {
+                    throw new RuntimeException('another authentication method was used with this email');
+                }
+
+                $user = User::create([
+                    'name' => $social_user->getName(),
+                    'email' => $social_user->getEmail(),
+                    'email_verified_at' => now(),
+                    'profile_url' => $social_user->getAvatar(),
+                    'provider' => $provider->value,
+                    'provider_id' => $social_user->getId(),
+                ]);
+            }
+
+            if (!$user->isCompleted()) {
+                $redirect =
+                    rtrim(config('app.client_url'), '/') . '/registration/onboarding?redirect=' . urlencode($redirect);
+            }
+
+            Auth::guard('web')->login($user, true);
+
+            $request->session()->regenerate();
+
+            return redirect($redirect);
+        } catch (\Throwable $th) {
+            $message = $th->getMessage();
+            $redirect =
+                rtrim(config('app.client_url'), '/') .
+                '/auth/login/sso/error?error=' .
+                urlencode($message) .
+                '&provider=' .
+                urlencode($provider->value);
+
+            return redirect($redirect);
+        }
+    }
+
+    /**
+     * Complete profile.
+     */
+    public function complete_profile(CompleteProfileRequest $request)
+    {
+        $user = $request->user('web');
+
+        if ($user->isCompleted()) {
+            return response()->json(
+                [
+                    'message' => 'User profile already completed.',
+                ],
+                422,
+            );
+        }
+
+        $validated = $request->validated();
+        $user->update($validated);
+
+        return response()->noContent();
     }
 }

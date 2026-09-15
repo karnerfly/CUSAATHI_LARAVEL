@@ -91,6 +91,7 @@ return new class extends Migration {
             $table->foreignId('stream_id')->constrained('college.streams')->cascadeOnDelete();
             $table->string('eligibility', 255);
             $table->integer('duration');
+            $table->boolean('active')->default(true);
 
             $table->unique(['college_id', 'stream_id']);
         });

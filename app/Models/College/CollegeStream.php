@@ -15,8 +15,9 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @property int $stream_id
  * @property string $eligibility
  * @property int $duration
+ * @property boolean $active
  */
-#[Fillable(['college_id', 'stream_id', 'eligibility', 'duration'])]
+#[Fillable(['college_id', 'stream_id', 'eligibility', 'duration', 'active'])]
 class CollegeStream extends Pivot implements Auditable
 {
     use AuditableTrait;

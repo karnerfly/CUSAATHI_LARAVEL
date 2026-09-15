@@ -27,7 +27,7 @@ class EnsureAdmin
 
         $admin = Auth::guard('admin')->user();
 
-        if ($request->session()->get('admin_revoked') === true || !$admin->active) {
+        if ($request->session()->get('admin_revoked', false) === true || !$admin->active) {
             // Auth::guard('admin')->logout();
 
             // $request->session()->forget('admin_revoked');

@@ -30,11 +30,14 @@ class AuthController extends Controller
      */
     public function login(LoginRequest $request)
     {
-        $auth_passed = Auth::guard('admin')->attempt([
-            'email' => $request->input('email'),
-            'password' => $request->input('password'),
-            'active' => true,
-        ]);
+        $auth_passed = Auth::guard('admin')->attempt(
+            [
+                'email' => $request->input('email'),
+                'password' => $request->input('password'),
+                'active' => true,
+            ],
+            $request->input('remember', false),
+        );
 
         if (!$auth_passed) {
             return response()->json(

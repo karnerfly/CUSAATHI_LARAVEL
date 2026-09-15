@@ -141,7 +141,8 @@ class AdminController extends Controller
             );
         }
 
-        $payload['admin_revoked'] = false;
+        unset($payload['admin_revoked']);
+        // $payload['admin_revoked'] = false;
 
         $session->payload = base64_encode(json_encode($payload));
         $session->save();

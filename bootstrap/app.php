@@ -3,6 +3,7 @@
 use App\Http\Middleware\CheckSessionRevoked;
 use App\Http\Middleware\EnsureAdmin;
 use App\Http\Middleware\EnsureUser;
+use App\Http\Middleware\UserComplete;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -24,6 +25,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'ensure.admin' => EnsureAdmin::class,
             'ensure.user' => EnsureUser::class,
+            'user.complete' => UserComplete::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

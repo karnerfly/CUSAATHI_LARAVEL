@@ -17,15 +17,18 @@ Route::controller(AuthController::class)
             ->middleware(['signed'])
             ->name('verification.verify');
         Route::post('/email/resend', 'resend_email_verification')
-            ->middleware(['auth:sanctum', 'session.revoked', 'ensure.user', 'throttle:6,1'])
+            ->middleware(['auth:sanctum', 'ensure.user', 'throttle:6,1'])
             ->name('verification.send');
 
         Route::get('login/sso/{provider}/redirect', 'social_login_redirect');
-        Route::get('login/sso/{provider}/callback', 'social_login_callback');
+
+        Route::middleware(['auth:sanctum', 'ensure.user', 'verified'])->group(function () {
+            Route::post('profile/complete', 'complete_profile');
+        });
     });
 
 Route::controller(DashboardController::class)
-    ->middleware(['auth:sanctum', 'ensure.user', 'verified'])
+    ->middleware(['auth:sanctum', 'ensure.user', 'verified', 'user.complete'])
     ->group(function () {
         Route::get('me', 'get_current_user');
         Route::get('sessions', 'get_sessions');

@@ -1,11 +1,13 @@
 <?php
 
-namespace App\Http\Requests\Admin\Auth;
+namespace App\Http\Requests\User\Auth;
 
+use App\Enums\UserAffiliation;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
-class LoginRequest extends FormRequest
+class CompleteProfileRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,9 +25,7 @@ class LoginRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => ['required', 'email', 'max:255'],
-            'password' => ['required', 'string'],
-            'remember' => ['required', 'boolean'],
+            'affiliation' => ['required', 'string', Rule::enum(UserAffiliation::class)],
         ];
     }
 }

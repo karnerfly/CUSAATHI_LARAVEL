@@ -27,7 +27,7 @@ class EnsureUser
 
         $user = Auth::guard('web')->user();
 
-        if ($request->session()->get('user_revoked') === true || !$user->active) {
+        if ($request->session()->get('user_revoked', false) === true || !$user->active) {
             // Auth::guard('web')->logout();
 
             // $request->session()->forget('user_revoked');
