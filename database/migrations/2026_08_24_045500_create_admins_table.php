@@ -17,6 +17,7 @@ return new class extends Migration {
             $table->string('password');
             $table->text('profile_url')->nullable();
             $table->boolean('active')->default(true);
+            $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();
         });
