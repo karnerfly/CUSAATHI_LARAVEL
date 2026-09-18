@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\User\Auth;
 
+use App\Enums\UserAffiliation;
 use App\Models\User;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
@@ -28,6 +29,7 @@ class StoreUserRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'min:4', 'max:100', 'regex:/^[A-Za-z]+(?: [A-Za-z]+)*$/'],
             'email' => ['required', 'email', 'max:255', Rule::unique(User::class)],
+            'affiliation' => ['required', 'string', Rule::enum(UserAffiliation::class)],
             'password' => ['required', 'string', 'confirmed', Password::min(8)->mixedCase()->numbers()->symbols()],
         ];
     }

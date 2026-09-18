@@ -62,9 +62,10 @@ class EmailVerificationNotification extends Notification implements ShouldQueue
             [
                 'id' => $notifiable->getKey(),
                 'hash' => sha1($notifiable->getEmailForVerification()),
+                'redirect' => rtrim(config('app.client_url'), '/') . '/dashboard',
             ],
         );
 
-        return rtrim(config('app.client_url'), '/') . '/verify-email?verify_url=' . urlencode($api_verify_url);
+        return $api_verify_url;
     }
 }

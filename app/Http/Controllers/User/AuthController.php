@@ -54,21 +54,27 @@ class AuthController extends Controller
     #[QueryParameter('signature', required: true, type: 'string')]
     public function verify_email(Request $request, int $id, string $hash)
     {
+        $email_verify_error_page = rtrim(config('app.client_url'), '/') . '/verify-email/error?error=';
+
+        if (!$request->hasValidSignature()) {
+            return redirect($email_verify_error_page . urlencode('invalid signature'));
+        }
+
         $user = User::findOrFail($id);
 
         if (!hash_equals((string) $hash, sha1($user->getEmailForVerification()))) {
-            return response()->json(['message' => 'Unauthorized'], 403);
+            return redirect($email_verify_error_page . urlencode('unauthorized request'));
         }
 
         if ($user->hasVerifiedEmail()) {
-            return response()->json(['message' => 'Email already verified'], 200);
+            return redirect($email_verify_error_page . urlencode('email already verified'));
         }
 
         if ($user->markEmailAsVerified()) {
             event(new Verified($user));
         }
 
-        return response()->json(['message' => 'Email has been successfully verified'], 200);
+        return redirect($request->query('redirect'));
     }
 
     /**

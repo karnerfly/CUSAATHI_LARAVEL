@@ -13,9 +13,7 @@ Route::controller(AuthController::class)
         Route::post('reset-password', 'reset_password');
         Route::post('logout', 'logout');
 
-        Route::get('/email/verify/{id}/{hash}', 'verify_email')
-            ->middleware(['signed'])
-            ->name('verification.verify');
+        Route::get('/email/verify/{id}/{hash}', 'verify_email')->name('verification.verify');
         Route::post('/email/resend', 'resend_email_verification')
             ->middleware(['auth:sanctum', 'ensure.user', 'throttle:6,1'])
             ->name('verification.send');

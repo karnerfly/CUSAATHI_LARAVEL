@@ -54,6 +54,8 @@ class User extends Authenticatable implements Auditable, MustVerifyEmail
     /** @use HasFactory<UserFactory> */
     use AuditableTrait, HasFactory, Notifiable, SoftDeletes;
 
+    protected $auditExclude = ['remember_token'];
+
     /**
      * Get the attributes that should be cast.
      *

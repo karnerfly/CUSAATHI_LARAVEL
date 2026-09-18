@@ -35,6 +35,8 @@ class Admin extends Authenticatable implements Auditable
     /** @use HasFactory<AdminFactory> */
     use AuditableTrait, HasFactory, Notifiable, SoftDeletes;
 
+    protected $auditExclude = ['remember_token'];
+
     /**
      * Get the attributes that should be cast.
      *
