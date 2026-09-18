@@ -1,5 +1,6 @@
 <?php
 
+use App\Auditing\Resolvers\CustomActorResolver;
 use OwenIt\Auditing\Models\Audit;
 use OwenIt\Auditing\Resolvers\IpAddressResolver;
 use OwenIt\Auditing\Resolvers\UrlResolver;
@@ -32,7 +33,7 @@ return [
     'user' => [
         'morph_prefix' => 'actor',
         'guards' => ['web', 'admin', 'api'],
-        'resolver' => UserResolver::class,
+        'resolver' => CustomActorResolver::class
     ],
 
     /*
