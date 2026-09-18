@@ -2,6 +2,9 @@
 echo "Running composer"
 composer install --no-dev --working-dir=/var/www/html
 
+echo "Shutdown the server"
+php artisan down --retry=30 --render=maintenance
+
 echo "Clearing old cache"
 composer dump-autoload
 php artisan optimize:clear
@@ -16,3 +19,6 @@ echo "Running migrations..."
 php artisan migrate --force
 
 echo "Laravel deployment completed."
+
+echo "Active server"
+php artisan up
