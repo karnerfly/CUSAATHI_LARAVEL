@@ -31,7 +31,7 @@ class IndexAuditRequest extends FormRequest
             'auditable_id' => ['sometimes', 'integer'],
             'from' => ['sometimes', 'date'],
             'to' => ['sometimes', 'date', 'after_or_equal:from'],
-            'sort' => ['sometimes', 'in:created_at,event,user_id,auditable_id'],
+            'sort' => ['sometimes', 'in:created_at,event,actor_id,auditable_id'],
             'order' => ['sometimes', 'in:asc,desc'],
             'per_page' => ['sometimes', 'integer', 'min:1', 'max:100'],
             'page' => ['sometimes', 'integer', 'min:1'],

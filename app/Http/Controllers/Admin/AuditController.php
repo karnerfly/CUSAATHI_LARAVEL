@@ -31,7 +31,7 @@ class AuditController extends Controller
             ]);
 
         $query->when($request->has('query'), function ($query) use ($request) {
-            $q = $request->query;
+            $q = $request->input('query');
             $query->whereHas('user', function ($query) use ($q) {
                 $query->where(function ($query) use ($q) {
                     $query->where('name', 'ilike', "%{$q}%")->orWhere('email', 'ilike', "%{$q}%");
