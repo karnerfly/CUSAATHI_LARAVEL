@@ -32,7 +32,7 @@ class StoreNoticeRequest extends FormRequest
             'college_id' => ['nullable', 'integer', Rule::exists(College::class, 'id')],
             'curriculum' => ['required', 'string', Rule::enum(NoticeCurriculum::class)],
             'category' => ['required', 'string', Rule::enum(NoticeCategory::class)],
-            'semester' => ['required', 'integer', 'between:1,8'],
+            'semester' => ['nullable', 'integer', 'between:1,8'],
             'resource_url' => ['required', 'string', 'url'],
             'published_date' => ['required', 'string', 'date'],
         ];
