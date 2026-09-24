@@ -33,6 +33,7 @@ Route::controller(AuthController::class)
     });
 
 Route::controller(DashboardController::class)
+    ->prefix('account')
     ->middleware(['auth:sanctum', 'ensure.admin'])
     ->group(function () {
         Route::get('me', 'get_current_admin');
