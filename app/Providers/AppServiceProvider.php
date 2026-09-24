@@ -6,7 +6,9 @@ use App\Models\Admin;
 use App\Models\Permission;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Routing\UrlGenerator;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 
@@ -42,5 +44,12 @@ class AppServiceProvider extends ServiceProvider
         }
 
         JsonResource::withoutWrapping();
+
+        Route::bind('admin', function ($value) {
+            return Admin::query()
+                ->whereKey($value)
+                ->whereKeyNot(Auth::guard('admin')->id())
+                ->firstOrFail();
+        });
     }
 }

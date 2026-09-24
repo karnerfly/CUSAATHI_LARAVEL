@@ -25,7 +25,10 @@ class AdminController extends Controller
      */
     public function index_admins()
     {
-        return Admin::withTrashed()->orderBy('id')->get();
+        return Admin::withTrashed()
+            ->whereKeyNot(Auth::guard('admin')->id())
+            ->orderBy('id')
+            ->get();
     }
 
     /**
