@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Middleware\CheckSessionRevoked;
 use App\Http\Middleware\EnsureAdmin;
 use App\Http\Middleware\EnsureUser;
 use App\Http\Middleware\UserComplete;
@@ -18,7 +17,7 @@ return Application::configure(basePath: dirname(__DIR__))
         api: __DIR__ . '/../routes/api.php',
         apiPrefix: 'api/v2',
         commands: __DIR__ . '/../routes/console.php',
-        health: '/up',
+        health: 'api/v2/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->statefulApi();
