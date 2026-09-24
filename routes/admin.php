@@ -63,6 +63,7 @@ Route::controller(AdminController::class)
     ->group(function () {
         Route::get('', 'index_admins')->can('read:admin');
         Route::post('', 'store_admin')->can('create:admin');
+        Route::get('{admin}', 'show_admin')->can('read:admin');
 
         Route::get('registrations/campaigns', 'index_registration_campaigns')->can('read:admin-registration-campaign');
         Route::post('registrations/campaigns', 'store_registration_campaign')->can(

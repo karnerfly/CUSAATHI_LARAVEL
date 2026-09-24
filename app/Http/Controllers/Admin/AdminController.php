@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Admin\IndexAdminRegistrationCampaignRequest;
 use App\Http\Requests\Admin\Admin\StoreAdminRegistrationCampaignRequest;
 use App\Http\Requests\Admin\Admin\StoreAdminRequest;
+use App\Http\Resources\Admin\Admin\AdminDetailResource;
 use App\Http\Resources\Admin\Admin\AdminRegistrationCampaignResource;
 use App\Http\Resources\Session\SessionResource;
 use App\Models\Admin;
@@ -42,6 +43,40 @@ class AdminController extends Controller
             ],
             201,
         );
+    }
+
+    /**
+     * Display the specified admin.
+     */
+    public function show_admin(Request $request, Admin $admin)
+    {
+        $sid = $request->session()->getId();
+
+        /** @var \Illuminate\Auth\SessionGuard $admin_guard */
+        $admin_guard = Auth::guard('admin');
+        $admin_auth_key = $admin_guard->getName();
+
+        $sessions = $admin
+            ->sessions()
+            ->where('last_activity', '>=', now()->subMinutes(config('session.lifetime'))->getTimestamp())
+            ->orderBy('id')
+            ->get()
+            ->filter(function ($session) use ($admin_auth_key, $admin) {
+                $payload = json_decode(base64_decode($session->payload), true);
+                return isset($payload[$admin_auth_key]) && $payload[$admin_auth_key] == $admin->id;
+            })
+            ->map(function ($session) use ($sid) {
+                $session->current = $session->id === $sid;
+                $payload = json_decode(base64_decode($session->payload), true);
+                $session->revoked = $payload['admin_revoked'] ?? false;
+                return $session;
+            })
+            ->values();
+
+        $admin->setRelation('sessions', $sessions);
+        $admin->load('permissions');
+
+        return AdminDetailResource::make($admin);
     }
 
     /**
