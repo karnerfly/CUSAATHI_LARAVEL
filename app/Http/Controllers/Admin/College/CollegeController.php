@@ -38,6 +38,7 @@ class CollegeController extends Controller
             'accreditation_grade',
             'created_at',
             'updated_at',
+            'deleted_at',
         ]);
 
         $query->when(

@@ -28,6 +28,7 @@ Route::controller(AuthController::class)
         Route::post('registration/request', 'registration_request')
             ->middleware('signed')
             ->name('api.admin.registration');
+        Route::get('registration/status', 'registration_status');
         Route::post('registration/complete', 'complete_registration_request');
         Route::post('logout', 'logout');
     });

@@ -30,6 +30,7 @@ class CollegeResource extends JsonResource
             'accreditation_grade' => $this->accreditation_grade,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
+            'deleted_at' => $this->deleted_at,
         ];
     }
 }

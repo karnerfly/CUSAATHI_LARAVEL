@@ -136,6 +136,24 @@ class AuthController extends Controller
     }
 
     /**
+     *  Request for an admin registration.
+     */
+    #[QueryParameter('cmpid', required: true, type: 'integer')]
+    public function registration_status(Request $request)
+    {
+        $cmpid = $request->query('cmpid');
+
+        $campaign = AdminRegistrationCampaign::find($cmpid);
+
+        return response()->json(
+            [
+                'campaign' => $campaign ? $campaign->only(['id', 'active', 'expires_at']) : null,
+            ],
+            200,
+        );
+    }
+
+    /**
      *  Complete the request for an admin registration.
      */
     public function complete_registration_request(AdminRegistrationCompleteRequest $request)
