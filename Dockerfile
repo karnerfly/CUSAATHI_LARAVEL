@@ -43,7 +43,6 @@ RUN mkdir -p \
     chmod -R 775 storage bootstrap/cache && \
     chmod 1777 /tmp
 
-
 RUN chmod +x /var/www/html/scripts/*.sh
 
 COPY conf/nginx/nginx-site.conf /etc/nginx/http.d/default.conf
