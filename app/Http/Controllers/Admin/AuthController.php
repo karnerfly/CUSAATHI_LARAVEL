@@ -136,7 +136,7 @@ class AuthController extends Controller
     }
 
     /**
-     *  Request for an admin registration.
+     *  Display the status of an admin registration campaign.
      */
     #[QueryParameter('cmpid', required: true, type: 'integer')]
     public function registration_status(Request $request)
