@@ -7,6 +7,7 @@ use App\Http\Requests\Admin\Dashboard\ChangeNameRequest;
 use App\Http\Requests\Admin\Dashboard\ChangePasswordRequest;
 use App\Http\Requests\Admin\Dashboard\UploadProfilePictureRequest;
 use App\Http\Resources\Admin\Admin\AdminResource;
+use App\Http\Resources\Admin\Permission\PermissionResource;
 use App\Http\Resources\Session\SessionResource;
 use App\Models\Admin;
 use App\Models\Session;
@@ -145,5 +146,18 @@ class DashboardController extends Controller
         $session->save();
 
         return response()->noContent();
+    }
+
+    /**
+     * Get permissions.
+     */
+
+    public function get_permissions(Request $request)
+    {
+        $admin = $request->user('admin');
+
+        $permissions = $admin->permissions()->wherePivot('active', true)->get();
+
+        return PermissionResource::collection($permissions);
     }
 }

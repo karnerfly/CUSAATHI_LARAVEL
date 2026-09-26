@@ -39,6 +39,7 @@ Route::controller(DashboardController::class)
     ->group(function () {
         Route::get('me', 'get_current_admin');
         Route::get('sessions', 'get_sessions');
+        Route::get('permissions', 'get_permissions');
         Route::post('change-password', 'change_password');
         Route::patch('name', 'change_name');
         Route::put('picture', 'upload_profile_picture');
