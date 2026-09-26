@@ -59,7 +59,7 @@ class AdminRegistration extends Model implements Auditable
             rtrim($spa_url, '/') .
             '/registration/complete?token=' .
             urlencode($this->token) .
-            'cmpid=' .
+            '&cmpid=' .
             urlencode($this->admin_registration_campaign_id);
         Mail::to($this->email)->queue(new AdminStartRegistrationMail($registration_url));
     }
