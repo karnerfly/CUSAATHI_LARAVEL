@@ -55,7 +55,12 @@ class AdminRegistration extends Model implements Auditable
 
     public function sendRegistrationMail(string $spa_url)
     {
-        $registration_url = rtrim($spa_url, '/').'/registration/complete?token='.urlencode($this->token);
+        $registration_url =
+            rtrim($spa_url, '/') .
+            '/registration/complete?token=' .
+            urlencode($this->token) .
+            'cmpid=' .
+            urlencode($this->admin_registration_campaign_id);
         Mail::to($this->email)->queue(new AdminStartRegistrationMail($registration_url));
     }
 }
