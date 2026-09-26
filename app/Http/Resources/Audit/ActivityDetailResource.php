@@ -19,7 +19,7 @@ class ActivityDetailResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $agent = new Agent;
+        $agent = new Agent();
         $agent->setUserAgent($this->user_agent);
 
         return [
@@ -34,12 +34,13 @@ class ActivityDetailResource extends JsonResource
                     'type' => class_basename($this->actor_type),
                 ]
                 : null,
-            'resource' => $this->auditable
-                ? [
-                    'id' => $this->auditable->id,
-                    'type' => class_basename($this->auditable_type),
-                ]
-                : null,
+            'resource' =>
+                $this->auditable_id && $this->auditable_type
+                    ? [
+                        'id' => $this->auditable_id,
+                        'type' => class_basename($this->auditable_type),
+                    ]
+                    : null,
             'changes' => [
                 'old' => $this->old_values,
                 'new' => $this->new_values,
